@@ -1,0 +1,1515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NotchUsage: The Screen Time Alternative for Mac</title>
+<meta name="description" content="NotchUsage knows when you're actually watching, not just when a tab is open. Focus, neutral and distraction for every app and site, a quiet nudge from the notch every hour, and a calm look back at your day.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%2318181b'/%3E%3Cpath d='M20 0h24v6a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8z' fill='%23000'/%3E%3Crect x='12' y='40' width='18' height='8' rx='3' fill='%23199E70'/%3E%3Crect x='32' y='40' width='8' height='8' rx='3' fill='%2348484d'/%3E%3Crect x='42' y='40' width='10' height='8' rx='3' fill='%23D95926'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0A0B;
+  --bg-2: #111113;
+  --surface: #151517;
+  --surface-2: #1C1C1F;
+  --surface-3: #242428;
+  --border: rgba(255,255,255,.08);
+  --border-2: rgba(255,255,255,.14);
+  --text: #F5F5F7;
+  --muted: #A1A1A6;
+  --faint: #6E6E73;
+  --accent: #2F7CF6;
+  --accent-hover: #4A8DF8;
+  --glow: rgba(47,124,246,.18);
+
+  /* category colors: Calm theme (dark values); the theme card can switch them */
+  --c-focus: #199E70;
+  --c-neutral: #5A5955;
+  --c-dist: #D95926;
+
+  /* playback states */
+  --s-watch: #2F7CF6;
+  --s-listen: #64D2FF;
+  --s-open: #3A3A3C;
+
+  --panel: #000;
+  --panel-text: #F5F5F7;
+  --panel-muted: #8E8E93;
+  --panel-line: rgba(255,255,255,.09);
+  --panel-raise: #1A1A1C;
+
+  --radius: 18px;
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 400 16px/1.55 var(--font); -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- nav ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: saturate(160%) blur(16px); -webkit-backdrop-filter: saturate(160%) blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav .wrap { display: flex; align-items: center; gap: 28px; height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; text-decoration: none; letter-spacing: -.01em; }
+.brand svg { width: 28px; height: 28px; }
+.nav-links { display: flex; gap: 22px; font-size: 14px; color: var(--muted); }
+.nav-links a { text-decoration: none; }
+.nav-links a:hover { color: var(--text); }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 999px;
+  font-weight: 600; font-size: 15px; text-decoration: none; border: 0; cursor: pointer; white-space: nowrap;
+  transition: background .15s, transform .15s;
+}
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 6px 24px var(--glow); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-ghost { background: var(--surface-2); color: var(--text); }
+.btn-ghost:hover { background: var(--surface-3); }
+.btn-sm { height: 36px; padding: 0 16px; font-size: 14px; }
+.btn svg { width: 16px; height: 16px; }
+
+/* ---------- hero ---------- */
+.hero { text-align: center; padding: 72px 0 40px; position: relative; }
+.hero::before {
+  content: ""; position: absolute; inset: -60px 0 auto; height: 520px; pointer-events: none; z-index: -1;
+  background: radial-gradient(600px 300px at 50% 0%, color-mix(in srgb, var(--c-focus) 16%, transparent), transparent 70%);
+}
+.pill {
+  display: inline-flex; align-items: center; gap: 10px; padding: 5px 14px 5px 6px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface); font-size: 13px; color: var(--muted); text-decoration: none;
+}
+.pill b { background: var(--accent); color: #fff; font-weight: 600; font-size: 11px; padding: 2px 8px; border-radius: 999px; }
+.pill:hover { border-color: var(--border-2); color: var(--text); }
+h1 {
+  font-size: clamp(40px, 7vw, 76px); line-height: 1.04; letter-spacing: -.035em; font-weight: 700;
+  margin: 0 auto 22px; max-width: 900px;
+}
+h1 .inline-icon {
+  display: inline-block; width: 1em; height: 1em; vertical-align: -.14em; margin: 0 .02em;
+  filter: drop-shadow(0 8px 24px rgba(94,92,230,.35));
+}
+.lede { font-size: clamp(17px, 2vw, 20px); color: var(--muted); max-width: 680px; margin: 0 auto; text-wrap: pretty; }
+.cta-row { display: flex; gap: 12px; justify-content: center; margin: 34px 0 20px; flex-wrap: wrap; }
+.meta { font-size: 13px; color: var(--muted); display: flex; gap: 8px 14px; justify-content: center; flex-wrap: wrap; }
+.meta .hot { color: var(--c-dist); }
+.meta span + span::before { content: "·"; margin-right: 14px; color: var(--faint); }
+
+/* ---------- demo shell ---------- */
+.demo { margin: 56px auto 0; max-width: 1040px; }
+.demo-switch {
+  display: inline-flex; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border);
+  margin-bottom: 18px; gap: 2px;
+}
+.demo-switch button {
+  border: 0; background: transparent; padding: 8px 16px; border-radius: 999px; font-size: 14px; font-weight: 500;
+  color: var(--muted); cursor: pointer; transition: background .2s, color .2s;
+}
+.demo-switch button[aria-pressed="true"] { background: var(--surface-3); color: var(--text); }
+.screen {
+  position: relative; border-radius: 22px; overflow: hidden; text-align: left;
+  border: 1px solid var(--border-2);
+  background:
+    radial-gradient(800px 420px at 15% 110%, #3B1E6E 0%, transparent 60%),
+    radial-gradient(700px 400px at 95% 100%, #7A3B12 0%, transparent 60%),
+    linear-gradient(180deg, #17151F, #0E0D12);
+  box-shadow: 0 40px 120px rgba(0,0,0,.45);
+}
+.menubar {
+  height: 30px; display: flex; align-items: center; padding: 0 16px; gap: 18px; font-size: 13px; position: relative;
+  background: rgba(20,20,24,.55); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: #EDEDF0;
+}
+.menubar b { font-weight: 600; }
+.menubar .right { margin-left: auto; display: flex; gap: 14px; align-items: center; }
+.menubar .mb-app { width: 15px; height: 15px; border-radius: 4px; }
+.screen-body { padding: 0 20px 28px; min-height: 120px; }
+
+/* the analysis panel grows out of the notch */
+.panel {
+  background: var(--panel); color: var(--panel-text); margin: -30px auto 0; position: relative; z-index: 2;
+  max-width: 900px; border-radius: 0 0 26px 26px; padding: 0 26px 26px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5);
+}
+.panel-head { height: 30px; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.panel-head .date { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.panel-head .notch-gap { flex: 1; min-width: 150px; }
+.chev { border: 0; background: none; color: var(--panel-muted); cursor: pointer; padding: 2px 4px; font-size: 14px; line-height: 1; }
+.chev:hover { color: var(--panel-text); }
+.seg { display: inline-flex; background: #1C1C1E; border-radius: 8px; padding: 2px; gap: 1px; }
+.seg button {
+  border: 0; background: transparent; color: var(--panel-muted); padding: 2px 9px; border-radius: 6px; cursor: pointer;
+  font-size: 12px; font-weight: 600; display: grid; place-items: center; height: 22px;
+}
+.seg button[aria-pressed="true"] { background: #3A3A3C; color: #fff; }
+.seg button svg { width: 14px; height: 14px; }
+.panel-body { padding-top: 20px; min-height: 430px; }
+.headline { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+.big { font-size: 44px; font-weight: 700; letter-spacing: -.03em; line-height: 1; }
+.sub { color: var(--panel-muted); font-size: 13px; margin-top: 6px; }
+.legend { display: flex; gap: 18px; font-size: 13px; margin-left: auto; flex-wrap: wrap; }
+.legend span { display: flex; align-items: center; gap: 7px; color: var(--panel-muted); }
+.legend b { color: var(--panel-text); font-weight: 600; }
+.sw { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+.f { background: var(--c-focus); } .n { background: var(--c-neutral); } .d { background: var(--c-dist); }
+
+.strip { position: relative; height: 46px; margin-top: 22px; border-radius: 8px; background: #111113; }
+.blk { position: absolute; top: 0; bottom: 0; border-radius: 3px; transition: opacity .25s, background .4s; cursor: pointer; }
+.blk.dim { opacity: .18; }
+.hours { position: relative; height: 18px; margin-top: 6px; font-size: 11px; color: var(--panel-muted); }
+.hours span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.hours span:first-child { transform: none; }
+.hours span:last-child { transform: translateX(-100%); }
+.tip {
+  position: absolute; z-index: 5; pointer-events: none; background: #2C2C2E; color: #fff; font-size: 12px;
+  padding: 6px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -110%); top: 0; opacity: 0; transition: opacity .12s;
+  display: flex; align-items: center; gap: 7px; box-shadow: 0 8px 20px rgba(0,0,0,.4);
+}
+.tip img { width: 14px; height: 14px; border-radius: 4px; }
+.tip.on { opacity: 1; }
+
+.sec-title { font-size: 12px; font-weight: 600; color: var(--panel-muted); margin: 24px 0 8px; display: flex; justify-content: space-between; }
+.rows { display: flex; flex-direction: column; }
+.srow {
+  display: grid; grid-template-columns: 170px 1fr 70px; gap: 16px; align-items: center; padding: 9px 10px; margin: 0 -10px;
+  border-radius: 10px; cursor: pointer; font-size: 14px; border: 0; background: none; text-align: left; color: inherit; width: calc(100% + 20px);
+}
+.srow:hover { background: var(--panel-raise); }
+.srow[aria-expanded="true"] { background: var(--panel-raise); }
+.srow .len { text-align: right; color: var(--panel-muted); }
+.cbar { display: flex; height: 6px; border-radius: 3px; overflow: hidden; gap: 2px; }
+.cbar i { display: block; height: 100%; border-radius: 2px; transition: background .4s; }
+.drill { padding: 6px 0 10px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 30px; }
+.item {
+  display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: center; font-size: 13px;
+  padding: 6px 8px; margin: 0 -8px; border-radius: 8px; cursor: pointer; border: 0; background: none; color: inherit; text-align: left; width: calc(100% + 16px);
+}
+.item:hover, .item[aria-expanded="true"] { background: var(--panel-raise); }
+.item img, .ico { width: 20px; height: 20px; border-radius: 5px; }
+.ico { display: grid; place-items: center; font-size: 10px; font-weight: 700; color: #fff; background: #3A3A3C; }
+.item .t { color: var(--panel-muted); }
+.item .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 7px; vertical-align: 1px; }
+.pages { grid-column: 1 / -1; font-size: 12.5px; color: var(--panel-muted); padding: 2px 0 8px 30px; }
+.pages div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--panel-line); }
+.pages div:last-child { border: 0; }
+.pages b { color: var(--panel-text); font-weight: 500; }
+
+.lanes { display: flex; flex-direction: column; gap: 6px; margin-top: 22px; }
+.lane { display: grid; grid-template-columns: 54px 1fr 64px; gap: 12px; align-items: center; font-size: 12px; color: var(--panel-muted); cursor: pointer; }
+.lane .strip { margin: 0; height: 30px; }
+.lane:hover .strip { outline: 1px solid rgba(255,255,255,.18); }
+.lane .tot { text-align: right; color: var(--panel-text); }
+.lanes.thin { gap: 3px; }
+.lanes.thin .lane .strip { height: 9px; border-radius: 3px; }
+.lanes.thin .blk { border-radius: 1px; }
+.parts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 26px; }
+.parts h5 { margin: 0; font-size: 12px; color: var(--panel-muted); font-weight: 600; }
+.parts .pv { font-size: 20px; font-weight: 600; margin: 4px 0 8px; }
+.parts .mini { font-size: 12px; display: flex; justify-content: space-between; color: var(--panel-muted); padding: 2px 0; }
+.parts .mini span:first-child { color: var(--panel-text); }
+
+.ins { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+.ins h4 { margin: 0 0 10px; font-size: 13px; color: var(--panel-muted); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.ins .fig { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.ins .fig .v { font-size: 32px; font-weight: 700; letter-spacing: -.02em; line-height: 1; }
+.delta { font-size: 12px; font-weight: 600; margin-left: 8px; }
+.ins .q { font-size: 12.5px; color: var(--panel-muted); margin: 8px 0 14px; }
+.ins .q b { color: var(--panel-text); font-weight: 600; }
+.sparks { display: flex; gap: 4px; align-items: flex-end; height: 40px; }
+.sparks i { width: 8px; border-radius: 2px; display: block; }
+.pattern { font-size: 13.5px; padding: 8px 0; border-bottom: 1px solid var(--panel-line); }
+.pattern:last-child { border: 0; }
+.pattern b { font-weight: 600; }
+.trends { width: 100%; border-collapse: collapse; font-size: 13px; }
+.trends td, .trends th { padding: 7px 0; border-bottom: 1px solid var(--panel-line); text-align: right; }
+.trends th { color: var(--panel-muted); font-weight: 500; font-size: 12px; }
+.trends td:first-child, .trends th:first-child { text-align: left; }
+.trends tr:last-child td { border: 0; }
+
+.goal-top { display: grid; grid-template-columns: 1fr 260px; gap: 34px; align-items: start; }
+.gbars { position: relative; display: flex; align-items: flex-end; gap: 10px; height: 190px; margin-top: 18px; padding-bottom: 20px; }
+.gbar { flex: 1; display: flex; flex-direction: column-reverse; gap: 2px; position: relative; height: 100%; justify-content: flex-start; }
+.gbar i { display: block; border-radius: 3px; }
+.gbar span { position: absolute; bottom: -20px; left: 0; right: 0; text-align: center; font-size: 11px; color: var(--panel-muted); }
+.gline { position: absolute; left: 0; right: 0; border-top: 1.5px dashed rgba(255,255,255,.55); }
+.gline em { position: absolute; right: 0; top: -18px; font-size: 11px; font-style: normal; color: var(--panel-muted); }
+.gkey { display: flex; flex-direction: column; gap: 9px; font-size: 13px; margin-top: 6px; }
+.gkey div { display: grid; grid-template-columns: 10px 1fr auto; gap: 10px; align-items: center; }
+.gkey .t { color: var(--panel-muted); }
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 26px; }
+.tile { background: var(--panel-raise); border-radius: 14px; padding: 14px; display: flex; gap: 12px; align-items: center; font-size: 13px; }
+.tile .t { color: var(--panel-muted); font-size: 12px; }
+.ring { width: 42px; height: 42px; flex: none; position: relative; }
+.ring svg { width: 42px; height: 42px; transform: rotate(-90deg); }
+.ring img, .ring .ico { position: absolute; inset: 11px; width: 20px; height: 20px; }
+
+/* Screen Time look-alike (deliberately plain) */
+.st { background: #1E1E20; color: #EDEDF0; border-radius: 12px; max-width: 900px; margin: 34px auto 0; padding: 26px 30px 30px; font-size: 14px; box-shadow: 0 30px 80px rgba(0,0,0,.4); }
+.st .stbig { font-size: 30px; font-weight: 600; }
+.st .stsub { color: #8E8E93; font-size: 13px; }
+.st .stbars { display: flex; align-items: flex-end; gap: 6px; height: 120px; margin: 22px 0 6px; border-bottom: 1px solid rgba(128,128,128,.25); }
+.st .stbars i { flex: 1; background: #0A84FF; border-radius: 2px 2px 0 0; display: block; }
+.st .sthours { display: flex; justify-content: space-between; color: #8E8E93; font-size: 11px; }
+.st .strow { display: grid; grid-template-columns: 24px 160px 1fr 80px; gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(128,128,128,.18); }
+.st .strow:last-child { border: 0; }
+.st .strow img { width: 20px; height: 20px; border-radius: 5px; }
+.st .strow .bar { height: 6px; background: #8E8E93; border-radius: 3px; opacity: .6; }
+.st .strow span:last-child { text-align: right; color: #8E8E93; }
+.try { font-size: 13px; color: var(--muted); margin-top: 16px; text-align: center; }
+
+/* ---------- sections ---------- */
+section { padding: 120px 0 0; }
+.kicker { font-size: 13px; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -.03em; font-weight: 700; margin: 14px 0 18px; text-wrap: balance; }
+.prose { color: var(--muted); font-size: 18px; max-width: 560px; }
+.prose p { margin: 0 0 14px; }
+.prose b { color: var(--text); font-weight: 600; }
+.split { display: grid; grid-template-columns: 1fr 1.25fr; gap: 64px; align-items: center; }
+.split.rev { grid-template-columns: 1.25fr 1fr; }
+.split.rev > :first-child { order: 2; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px;
+}
+.small-note { font-size: 13px; color: var(--faint); margin-top: 14px; }
+
+/* 01 open vs watching */
+.ow-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.ow-head .demo-switch { margin: 0; }
+.ow-head .total { font-size: 13px; color: var(--muted); }
+.ow-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; padding: 14px 0; border-top: 1px solid var(--border); }
+.ow-row img { width: 28px; height: 28px; border-radius: 7px; }
+.ow-name { font-weight: 600; font-size: 15px; display: flex; justify-content: space-between; gap: 10px; }
+.ow-name small { font-weight: 400; color: var(--muted); font-size: 13px; transition: opacity .3s; }
+.ow-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; background: var(--surface-2); }
+.ow-bar i { display: block; height: 100%; transition: width .6s cubic-bezier(.2,.7,.2,1), background .4s; }
+.ow-time { font-size: 15px; font-weight: 600; min-width: 64px; text-align: right; }
+.ow-time small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+.ow-legend { display: flex; gap: 18px; font-size: 13px; color: var(--muted); margin-top: 14px; transition: opacity .3s; }
+.ow-legend span { display: flex; gap: 7px; align-items: center; }
+
+/* 02 compare */
+.ask { display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--muted); margin-top: 20px; flex-wrap: wrap; }
+.ask .lbl { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+.ask a { text-decoration: none; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; }
+.ask a:hover { color: var(--text); border-color: var(--border-2); }
+.table-wrap { margin-top: 40px; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--surface); }
+table.cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
+.cmp th, .cmp td { padding: 18px 22px; text-align: left; vertical-align: top; border-top: 1px solid var(--border); }
+.cmp thead th { border-top: 0; font-size: 14px; font-weight: 600; padding: 20px 22px; }
+.cmp thead th span { display: inline-flex; align-items: center; gap: 10px; }
+.cmp thead th img, .cmp thead th svg { width: 26px; height: 26px; border-radius: 7px; }
+.cmp thead th img { border-radius: 0; }
+.cmp td:first-child { color: var(--text); font-weight: 500; width: 26%; }
+.cmp td:nth-child(2) { color: var(--muted); width: 34%; }
+.cmp td:nth-child(3) { color: var(--text); }
+.cmp td:nth-child(3)::before { content: "✓"; color: var(--c-focus); font-weight: 700; margin-right: 10px; }
+.cmp th:nth-child(3), .cmp td:nth-child(3) { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+
+/* 03 nudge */
+.nudge-screen { min-height: 360px; }
+.notch {
+  position: absolute; left: 50%; top: 0; transform: translateX(-50%); z-index: 4;
+  width: 190px; height: 30px; background: #000; border-radius: 0 0 14px 14px; color: #fff;
+  transition: width .5s cubic-bezier(.3,.8,.25,1), height .5s cubic-bezier(.3,.8,.25,1), border-radius .5s;
+  overflow: hidden; cursor: pointer;
+}
+.notch.open { border-radius: 0 0 26px 26px; }
+.notch .nc { position: absolute; left: 0; right: 0; top: 30px; padding: 6px 22px 18px; opacity: 0; transition: opacity .25s; }
+.notch.open .nc { opacity: 1; transition-delay: .2s; }
+.notch .wing { position: absolute; top: 0; height: 30px; display: flex; align-items: center; font-size: 13px; font-weight: 600; opacity: 0; transition: opacity .25s; }
+.notch.open .wing { opacity: 1; transition-delay: .2s; }
+.notch .wing.l { left: 18px; } .notch .wing.r { right: 18px; }
+.nmsg { display: flex; align-items: center; gap: 12px; font-size: 16px; white-space: nowrap; }
+.nmsg img, .nmsg .ico { width: 28px; height: 28px; border-radius: 7px; }
+.nmsg b { font-weight: 700; }
+.nmsg small { display: block; color: var(--panel-muted); font-size: 12.5px; }
+.nprog { position: absolute; left: 22px; right: 22px; bottom: 8px; height: 2px; background: rgba(255,255,255,.1); border-radius: 1px; overflow: hidden; }
+.nprog i { display: block; height: 100%; background: rgba(255,255,255,.45); width: 100%; transform-origin: left; }
+.gl-rows { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.gl-rows div { display: grid; grid-template-columns: 18px 1fr auto; gap: 10px; align-items: center; }
+.gl-rows img { width: 18px; height: 18px; border-radius: 5px; }
+.gl-rows span:last-child { color: var(--panel-muted); }
+.play { width: 22px; height: 22px; border-radius: 50%; background: #2C2C2E; display: grid; place-items: center; }
+.nudge-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 18px; }
+.chip {
+  border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 8px 14px; font-size: 14px;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 8px; color: var(--muted);
+}
+.chip:hover { color: var(--text); border-color: var(--border-2); }
+.chip[aria-pressed="true"] { color: var(--text); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+.chip img { width: 16px; height: 16px; border-radius: 4px; }
+.desk-window {
+  position: absolute; left: 6%; right: 6%; top: 52px; bottom: -40px; border-radius: 12px; background: rgba(30,30,34,.8);
+  border: 1px solid rgba(255,255,255,.08); overflow: hidden;
+}
+.tl-dots { display: flex; gap: 7px; padding: 12px 14px; }
+.tl-dots i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; display: block; }
+.tl-dots i:nth-child(2) { background: #FEBC2E; } .tl-dots i:nth-child(3) { background: #28C840; }
+.video { margin: 4px 18px; border-radius: 10px; aspect-ratio: 16/6.2; background: linear-gradient(135deg, #1a1a1a, #2b2b2b); display: grid; place-items: center; position: relative; overflow: hidden; }
+.video::after { content: ""; width: 0; height: 0; border-left: 22px solid rgba(255,255,255,.85); border-top: 13px solid transparent; border-bottom: 13px solid transparent; margin-left: 6px; }
+.video .vbar { position: absolute; left: 0; bottom: 0; height: 3px; background: #FF0033; width: 38%; }
+.vlines { margin: 12px 18px; }
+.vlines i { display: block; height: 9px; border-radius: 5px; background: rgba(255,255,255,.12); margin-bottom: 8px; }
+
+.yt { padding-bottom: 14px; }
+.yt-top { display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-size: 12px; }
+.yt-top .tl-dots { padding: 0; margin-right: 8px; }
+.yt-top img { width: 16px; height: 16px; border-radius: 4px; }
+.yt-search { margin-left: auto; margin-right: auto; width: 38%; padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(128,128,128,.3); color: rgba(128,128,128,.9); font-size: 11px; }
+.yt-main { display: grid; grid-template-columns: 1fr 120px; gap: 12px; padding: 0 14px; }
+.yt-player { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 16/8.6; background: #000; }
+.yt-scene { position: absolute; inset: 0; display: grid; place-items: center;
+  background: radial-gradient(60% 80% at 30% 30%, #4a3a8f 0%, transparent 60%), radial-gradient(60% 80% at 80% 80%, #b2552b 0%, transparent 60%), #15131c; }
+.yt-chip { width: 34%; aspect-ratio: 1; border-radius: 14%; background: linear-gradient(145deg, #2c2c30, #111); border: 1px solid rgba(255,255,255,.18);
+  display: grid; place-items: center; font-weight: 700; font-size: 18px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.5); letter-spacing: -.02em; }
+.yt-ctrl { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 10px 6px; background: linear-gradient(transparent, rgba(0,0,0,.7)); color: #fff; font-size: 10px; }
+.yt-prog { height: 3px; background: rgba(255,255,255,.3); border-radius: 2px; }
+.yt-prog i { display: block; height: 100%; width: 73.6%; background: #FF0033; border-radius: 2px; }
+.yt-row { display: flex; gap: 10px; margin-top: 5px; opacity: .9; }
+.yt-title { font-size: 13px; font-weight: 600; margin-top: 8px; }
+.yt-ch { display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(128,128,128,1); margin-top: 4px; }
+.yt-ch i { width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, #5b8def, #bf5af2); display: block; }
+.yt-side { display: flex; flex-direction: column; gap: 8px; }
+.yt-side div { display: grid; grid-template-columns: 1fr; gap: 4px; }
+.yt-side i { display: block; aspect-ratio: 16/9; border-radius: 6px; }
+.yt-side span { height: 6px; width: 80%; border-radius: 3px; background: rgba(128,128,128,.3); }
+
+/* 04 categories */
+.cat-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.cat-col { background: var(--surface-2); border-radius: 14px; padding: 14px; min-height: 196px; }
+.cat-col h5 { margin: 0 0 4px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.cat-col .ct { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.cat-col .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.app-chip {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 5px 9px 5px 5px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border); cursor: pointer; transition: transform .15s;
+}
+.app-chip:hover { border-color: var(--border-2); transform: translateY(-1px); }
+.app-chip img, .app-chip .ico { width: 18px; height: 18px; border-radius: 5px; }
+.app-chip.moved { animation: pop .45s; }
+@keyframes pop { 0% { transform: scale(.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.cat-strip { background: #000; border-radius: 16px; padding: 18px 18px 10px; }
+.cat-strip .strip { margin-top: 0; }
+.cat-strip .hours { color: #8E8E93; }
+
+/* 05 goals */
+.browser { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; position: relative; }
+.browser .bar { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 12.5px; color: var(--muted); }
+.browser .url { flex: 1; background: var(--surface-2); border-radius: 8px; padding: 5px 10px; display: flex; gap: 8px; align-items: center; }
+.browser .url img { width: 14px; height: 14px; border-radius: 3px; }
+.browser .page { height: 210px; position: relative; padding-top: 12px; }
+.browser .blank { position: absolute; inset: 0; background: var(--surface); display: grid; place-items: center; color: var(--faint); font-size: 13px; opacity: 0; transition: opacity .3s; }
+.browser.blocked .blank { opacity: 1; }
+.browser .notch { cursor: default; }
+.slider-row { margin-top: 22px; }
+.slider-row label { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+.slider-row label b { color: var(--text); font-weight: 600; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.marks { position: relative; height: 22px; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.marks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.goal-card { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+.goal-card .ring { width: 48px; height: 48px; }
+.goal-card .ring svg { width: 48px; height: 48px; }
+.goal-card .ring img { inset: 13px; width: 22px; height: 22px; }
+.goal-card .gt { font-size: 15px; font-weight: 600; }
+.goal-card .gs { font-size: 13px; color: var(--muted); }
+.goal-card .lock { margin-left: auto; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); color: var(--muted); transition: all .3s; }
+.goal-card .lock.on { color: var(--c-dist); background: color-mix(in srgb, var(--c-dist) 14%, transparent); }
+
+
+/* 06 focus */
+.fx { position: relative; overflow: hidden; padding-top: 62px; }
+.fx .notch { width: 300px; cursor: default; }
+.fx .notch .wing { opacity: 1; gap: 5px; }
+.fx .notch .wing svg { width: 14px; height: 14px; }
+.fx .notch .nc { padding: 6px 16px 12px; }
+.fx-top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.fx-top .demo-switch { margin-bottom: 0; }
+.fx-note { font-size: 13px; color: var(--muted); }
+.fx-sites { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+.fx-site { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; text-align: left; }
+.fx-site img { width: 20px; height: 20px; border-radius: 5px; }
+.fx-site .pill { margin-left: auto; font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--surface-3); color: var(--muted); transition: all .3s; }
+.fx-site .pill.on { color: var(--c-dist); background: color-mix(in srgb, var(--c-dist) 14%, transparent); }
+
+/* 07 also included */
+.feat .vis.desk { background: linear-gradient(160deg, #1b2a40, #3a1d36); }
+.mini-glance { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 88%; height: 34px; background: #000; color: #fff; border-radius: 0 0 16px 16px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 14px; font-weight: 600; }
+.mini-glance .mg-l { display: flex; align-items: center; gap: 6px; }
+.mini-glance svg { width: 15px; height: 15px; }
+.grid9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+.feat { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.feat .vis { height: 190px; background: var(--bg-2); border-bottom: 1px solid var(--border); position: relative; display: grid; place-items: center; overflow: hidden; }
+.feat .txt { padding: 20px 22px 22px; }
+.feat h4 { margin: 0 0 6px; font-size: 17px; }
+.feat p { margin: 0; color: var(--muted); font-size: 14.5px; }
+.picks { width: 82%; }
+.picks .pk-n { font-size: 30px; font-weight: 700; letter-spacing: -.02em; }
+.picks .pk-n small { font-size: 14px; color: var(--muted); font-weight: 500; margin-left: 6px; }
+.picks .pk-line { position: relative; height: 30px; margin-top: 10px; border-bottom: 1px solid var(--border-2); }
+.picks .pk-line i { position: absolute; bottom: 0; width: 2px; background: var(--accent); border-radius: 1px; transform-origin: bottom; animation: rise .5s both; }
+@keyframes rise { from { transform: scaleY(0); } }
+.picks .pk-h { display: flex; justify-content: space-between; font-size: 11px; color: var(--faint); margin-top: 4px; }
+.icon-cloud { display: grid; grid-template-columns: repeat(6, 34px); gap: 12px; }
+.icon-cloud img { width: 34px; height: 34px; border-radius: 9px; transition: transform .2s; }
+.icon-cloud img:hover { transform: scale(1.15); }
+.ctx { background: var(--surface-3); border: 1px solid var(--border-2); border-radius: 10px; padding: 5px; font-size: 13px; width: 180px; box-shadow: 0 12px 30px rgba(0,0,0,.3); position: absolute; left: 44%; top: 50px; z-index: 1; }
+.ctx div { padding: 5px 10px; border-radius: 6px; display: flex; align-items: center; gap: 8px; }
+.ctx div.hl { background: var(--accent); color: #fff; }
+.ctx hr { border: 0; border-top: 1px solid var(--border-2); margin: 4px 6px; }
+.pagerow { position: absolute; left: 8%; top: 18px; font-size: 13px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; display: flex; gap: 8px; align-items: center; }
+.pagerow img { width: 16px; height: 16px; border-radius: 4px; }
+.rule { position: absolute; left: 8%; bottom: 14px; font-size: 12px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; }
+.rule b { color: var(--text); font-weight: 600; }
+.themes { display: flex; flex-direction: column; gap: 8px; width: 80%; }
+.theme-btn { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; border: 1px solid var(--border); background: var(--surface); border-radius: 10px; padding: 7px 10px; cursor: pointer; font-size: 13px; text-align: left; }
+.theme-btn[aria-pressed="true"] { border-color: var(--accent); }
+.theme-btn .sws { display: flex; gap: 3px; height: 10px; }
+.theme-btn .sws i { flex: 1; border-radius: 3px; display: block; }
+.twins { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 86%; }
+.twin { font-size: 11px; color: var(--muted); text-align: center; }
+.twin .mini-s { height: 96px; border-radius: 8px; background: linear-gradient(160deg, #2a1d4a, #4a2a14); position: relative; margin-bottom: 6px; border: 1px solid var(--border); overflow: hidden; }
+.mini-notch { position: absolute; left: 50%; top: 0; transform: translateX(-50%); background: #000; border-radius: 0 0 7px 7px; width: 34px; height: 8px; }
+.mini-notch.big { width: 96px; height: 30px; border-radius: 0 0 11px 11px; display: flex; align-items: flex-end; justify-content: center; gap: 5px; padding-bottom: 6px; color: #fff; font-size: 8px; font-weight: 600; }
+.mini-notch.big img { width: 10px; height: 10px; border-radius: 3px; }
+.rec { position: absolute; right: 7px; top: 6px; font-size: 9px; font-weight: 700; color: #FF453A; display: flex; align-items: center; gap: 4px; }
+.rec::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #FF453A; animation: blink 1.4s infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+.ext { width: 78%; height: 128px; border-radius: 8px; border: 1px solid var(--border-2); position: relative; background: linear-gradient(160deg, #1b2a40, #3a1d36); overflow: hidden; }
+.ext .drop { position: absolute; left: 50%; transform: translate(-50%, -100%); top: 10px; background: #000; color: #fff; border-radius: 12px; padding: 8px 12px; font-size: 11px; display: flex; gap: 8px; align-items: center; white-space: nowrap; animation: drop 4s infinite; }
+.ext .drop img { width: 16px; height: 16px; border-radius: 4px; }
+@keyframes drop { 0%, 8% { transform: translate(-50%, -140%); } 18%, 70% { transform: translate(-50%, 0); } 80%, 100% { transform: translate(-50%, -140%); } }
+.qh { width: 84%; }
+.qh-head { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 14px; }
+.qh-head b { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+.qh-bar { position: relative; height: 28px; border-radius: 8px; background: var(--surface-2); }
+.qh-bar .q { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--accent) 30%, transparent); display: block; }
+.qh-bar .q:first-child { border-radius: 8px 0 0 8px; } .qh-bar .q:nth-child(2) { border-radius: 0 8px 8px 0; }
+.qh-bar em { position: absolute; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--text); }
+.qh-bar em.off { background: transparent; border: 1.5px dashed var(--muted); }
+.qh-h { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--faint); margin-top: 6px; }
+.qh-key { display: flex; gap: 14px; font-size: 11px; color: var(--muted); margin-top: 10px; }
+.qh-key span { display: flex; align-items: center; gap: 6px; }
+.qh-key i { width: 8px; height: 8px; border-radius: 50%; display: block; background: var(--text); }
+.qh-key i.off { background: transparent; border: 1.5px dashed var(--muted); }
+.pod { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 86%; font-size: 11px; color: var(--muted); }
+.pod b { display: block; color: var(--text); font-size: 15px; margin: 2px 0 6px; }
+.pod .cbar { height: 5px; }
+
+/* pricing */
+.price-card { max-width: 560px; margin: 40px auto 0; padding: 34px; text-align: left; border-radius: 24px; background: var(--surface); border: 1px solid var(--border); position: relative; overflow: hidden; }
+.price-card::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: linear-gradient(90deg, var(--c-focus), var(--c-dist)); }
+.price-row { display: flex; align-items: baseline; gap: 14px; margin: 18px 0 4px; }
+.price { font-size: 64px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+.was { font-size: 22px; color: var(--faint); text-decoration: line-through; }
+.seats { margin: 18px 0 22px; }
+.seats .track { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.seats .track i { display: block; height: 100%; width: 0; background: var(--c-dist); border-radius: 3px; }
+.seats div:last-child { font-size: 13px; color: var(--muted); margin-top: 8px; display: flex; justify-content: space-between; }
+.checks { list-style: none; padding: 0; margin: 0 0 26px; display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+.checks li { display: flex; gap: 12px; }
+.checks li::before { content: "✓"; color: var(--c-focus); font-weight: 700; }
+.price-card .btn { width: 100%; justify-content: center; height: 50px; font-size: 16px; }
+.fine { font-size: 13px; color: var(--muted); text-align: center; margin-top: 14px; }
+
+/* faq */
+.faq { max-width: 760px; margin: 30px auto 0; }
+details { border-bottom: 1px solid var(--border); }
+summary { list-style: none; cursor: pointer; padding: 20px 0; font-size: 17px; font-weight: 600; display: flex; justify-content: space-between; gap: 20px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 22px; line-height: 1; transition: transform .2s; }
+details[open] summary::after { transform: rotate(45deg); }
+details p { margin: 0 0 20px; color: var(--muted); max-width: 640px; }
+
+.final { text-align: center; padding: 140px 0 120px; }
+.final h2 { max-width: 640px; margin-left: auto; margin-right: auto; }
+footer { border-top: 1px solid var(--border); padding: 28px 0 40px; font-size: 13px; color: var(--muted); }
+footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+footer a { text-decoration: none; } footer a:hover { color: var(--text); }
+.center { text-align: center; }
+.center .prose { margin: 0 auto; }
+
+/* reveal */
+.js .rv { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+.js .rv.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .rv { opacity: 1; transform: none; }
+}
+
+@media (max-width: 960px) {
+  .nav-links { display: none; }
+  .split, .split.rev { grid-template-columns: 1fr; gap: 36px; }
+  .split.rev > :first-child { order: 0; }
+  .grid9 { grid-template-columns: 1fr 1fr; }
+  .goal-top { grid-template-columns: 1fr; }
+  .tiles { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .wrap { padding: 0 16px; }
+  .hero { padding-top: 48px; }
+  .screen-body { padding: 0 8px 16px; }
+  .panel { padding: 0 14px 18px; border-radius: 0 0 20px 20px; }
+  .panel-head .notch-gap { min-width: 0; }
+  .panel-head { gap: 6px; }
+  .seg button { padding: 2px 7px; }
+  .panel-head .date span { display: none; }
+  .legend { margin-left: 0; gap: 12px; }
+  .big { font-size: 36px; }
+  .srow { grid-template-columns: 1fr 64px; }
+  .srow .cbar { grid-column: 1 / -1; grid-row: 2; }
+  .drill { grid-template-columns: 1fr; }
+  .ins { grid-template-columns: 1fr; gap: 26px; }
+  .parts { grid-template-columns: 1fr 1fr; }
+  .grid9, .cat-cols, .fx-sites { grid-template-columns: 1fr; }
+  .cmp th, .cmp td { padding: 14px 12px; font-size: 13.5px; }
+  .cmp td:first-child { width: 30%; }
+  .cmp td:nth-child(3)::before { display: none; }
+  .st { padding: 20px 16px; }
+  .st .strow { grid-template-columns: 20px 1fr 64px; }
+  .st .strow .bar { display: none; }
+  .desk-window { left: 3%; right: 3%; }
+  .nav .btn .lbl-long { display: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="15" fill="#18181B"/>
+      <rect x=".5" y=".5" width="63" height="63" rx="14.5" fill="none" stroke="rgba(255,255,255,.12)"/>
+      <path d="M20 0h24v6a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8z" fill="#000"/>
+      <rect x="11" y="38" width="20" height="10" rx="3" style="fill:var(--c-focus)"/>
+      <rect x="33" y="38" width="8" height="10" rx="3" fill="#48484D"/>
+      <rect x="43" y="38" width="10" height="10" rx="3" style="fill:var(--c-dist)"/>
+    </symbol>
+    <symbol id="i-apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8s2.3-1.3 3.1-2.5c1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.2zM13.9 5.2c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></symbol>
+    <symbol id="i-timeline" viewBox="0 0 16 16"><rect x="1" y="5" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="8" y="5" width="3" height="6" rx="1.5" fill="currentColor" opacity=".55"/><rect x="12" y="5" width="3" height="6" rx="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-insights" viewBox="0 0 16 16"><rect x="2" y="8" width="3" height="6" rx="1" fill="currentColor"/><rect x="6.5" y="4" width="3" height="10" rx="1" fill="currentColor"/><rect x="11" y="2" width="3" height="12" rx="1" fill="currentColor"/></symbol>
+    <symbol id="i-goals" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8" cy="8" r="2.4" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg><use href="#logo"/></svg>NotchUsage</a>
+    <nav class="nav-links">
+      <a href="#watching">Features</a>
+      <a href="#compare">Compare</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <!-- TODO: link to the Dodo Payments checkout -->
+      <a class="btn btn-primary btn-sm" href="#pricing"><svg><use href="#i-apple"/></svg><span class="lbl-long">Get NotchUsage ·</span> $1</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- ============ HERO ============ -->
+  <div class="hero wrap">
+    <h1 class="rv">The <img class="inline-icon" src="assets/ScreenTimeIcon.png" alt=""> Screen&nbsp;Time alternative for Mac</h1>
+    <p class="lede rv">NotchUsage knows when you're actually watching, not just when a tab is open. It sorts every minute into focus, neutral and distraction, tells you quietly from the notch every hour you spend on a site, and shows you the day in one calm strip.</p>
+    <div class="cta-row rv">
+      <a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Get NotchUsage for $1</a>
+      <a class="btn btn-ghost" href="#watching">See what it does</a>
+    </div>
+    <div class="meta rv num">
+      <span class="hot" data-seats-text></span>
+      <span>One-time payment</span>
+      <span>14-day refund</span>
+    </div>
+
+    <div class="demo rv">
+      <div class="demo-switch" role="group" aria-label="Compare views">
+        <button aria-pressed="false" data-hero="st">What Screen Time shows you</button>
+        <button aria-pressed="true" data-hero="nu">What NotchUsage shows you</button>
+      </div>
+      <div class="screen">
+        <div class="menubar">
+          <svg width="13" height="15"><use href="#i-apple"/></svg><b>Safari</b><span>File</span><span>Edit</span><span>View</span>
+          <span class="right num"><span>87%</span><span>Thu Oct 8&nbsp; 9:41 PM</span></span>
+        </div>
+        <div class="screen-body">
+          <div class="panel" id="heroPanel">
+            <div class="panel-head">
+              <div class="date"><button class="chev" aria-label="Previous">‹</button><span id="pDate">Thu, Oct 8</span><button class="chev" aria-label="Next">›</button></div>
+              <div class="notch-gap"></div>
+              <div class="seg" role="group" aria-label="Page">
+                <button aria-pressed="true" data-page="timeline" aria-label="Timeline"><svg><use href="#i-timeline"/></svg></button>
+                <button aria-pressed="false" data-page="insights" aria-label="Insights"><svg><use href="#i-insights"/></svg></button>
+                <button aria-pressed="false" data-page="goals" aria-label="Goals"><svg><use href="#i-goals"/></svg></button>
+              </div>
+              <div class="seg" role="group" aria-label="Range" id="rangeSeg">
+                <button aria-pressed="true" data-range="D">D</button>
+                <button aria-pressed="false" data-range="W">W</button>
+                <button aria-pressed="false" data-range="M">M</button>
+              </div>
+            </div>
+            <div class="panel-body" id="panelBody"></div>
+          </div>
+          <div class="st" id="stView" hidden></div>
+        </div>
+      </div>
+      <p class="try">Try it: every page and range works, and a session opens into its apps, sites and pages. The figures are made up, because a web page can't see your Mac.</p>
+    </div>
+  </div>
+
+  <!-- ============ 01 WATCHING ============ -->
+  <section id="watching">
+    <div class="wrap split">
+      <div class="rv">
+        <div class="kicker">01</div>
+        <h2>Open isn't watching</h2>
+        <div class="prose">
+          <p>A Twitch stream left running behind your editor. A YouTube tab you paused an hour ago. Screen Time counts both as time spent.</p>
+          <p>NotchUsage checks every 5 seconds whether something is really playing in the tab you're looking at. <b>Watching</b>, <b>listening</b> in the background and <b>just open</b> are kept apart, and a locked Mac is always away, even with a stream still running.</p>
+        </div>
+      </div>
+      <div class="card rv">
+        <div class="ow-head">
+          <div class="demo-switch" role="group" aria-label="Compare">
+            <button aria-pressed="false" data-ow="st">Screen Time</button>
+            <button aria-pressed="true" data-ow="nu">NotchUsage</button>
+          </div>
+          <span class="total num" id="owTotal"></span>
+        </div>
+        <div id="owRows"></div>
+        <div class="ow-legend" id="owLegend">
+          <span><i class="sw" style="background:var(--s-watch)"></i>Watching</span>
+          <span><i class="sw" style="background:var(--s-listen)"></i>Listening</span>
+          <span><i class="sw" style="background:var(--s-open)"></i>Just open</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 COMPARE ============ -->
+  <section id="compare">
+    <div class="wrap">
+      <div class="rv">
+        <div class="kicker">02</div>
+        <h2>NotchUsage compared with Screen&nbsp;Time</h2>
+        <div class="prose" style="max-width:680px">
+          <p>Screen Time is good at a weekly total. NotchUsage also tells you what you were really doing, whether it was focus or distraction, and taps you on the shoulder while it's still happening.</p>
+        </div>
+        <div class="ask">
+          <span class="lbl">Ask AI</span>
+          <a href="https://chatgpt.com/?q=Compare%20NotchUsage%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">ChatGPT</a>
+          <a href="https://claude.ai/new?q=Compare%20NotchUsage%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">Claude</a>
+          <a href="https://www.perplexity.ai/search?q=Compare%20NotchUsage%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">Perplexity</a>
+        </div>
+      </div>
+      <div class="table-wrap rv">
+        <table class="cmp">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th><span><img src="assets/ScreenTimeIcon.png" alt="">Screen Time</span></th>
+              <th><span><svg><use href="#logo"/></svg>NotchUsage</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>What counts</td><td>Any time in front</td><td>Watching, listening or just open</td></tr>
+            <tr><td>A paused video</td><td>Same as playing</td><td>Kept apart</td></tr>
+            <tr><td>In the moment</td><td>Nothing until a limit</td><td>An hourly nudge from the notch</td></tr>
+            <tr><td>Categories</td><td>Fixed by Apple</td><td>Yours, down to a page</td></tr>
+            <tr><td>Your day</td><td>A bar per hour</td><td>Sessions, sites and pages</td></tr>
+            <tr><td>Insights</td><td>Change from last week</td><td>Focus sessions and patterns</td></tr>
+            <tr><td>Goals</td><td>App limits, downtime</td><td>Goals, with optional blocking</td></tr>
+            <tr><td>Focus timer</td><td>None</td><td>Built in</td></tr>
+            <tr><td>Price</td><td>Included with macOS</td><td class="num">$1 once, then $4.99</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 NUDGE ============ -->
+  <section id="nudge">
+    <div class="wrap">
+      <div class="split rev">
+        <div class="rv">
+          <div class="kicker">03</div>
+          <h2>A nudge from the notch, not a lecture</h2>
+          <div class="prose">
+            <p>At each full hour you spend on a site, a small panel grows out of the notch, says so in one line, and folds back after 7 seconds. Again once all your sites together pass 2 hours a day.</p>
+            <p>No buttons, no decision to make, and it never takes your keyboard. Hover the notch any time for today at a glance, or click it for the whole day.</p>
+          </div>
+        </div>
+        <div class="rv">
+          <div class="screen nudge-screen" id="nudgeScreen">
+            <div class="menubar">
+              <svg width="13" height="15"><use href="#i-apple"/></svg><b>Safari</b><span>File</span><span>Edit</span>
+              <span class="right num"><span>9:41 PM</span></span>
+            </div>
+            <div class="notch" id="notch" tabindex="0" aria-label="Notch: hover for today at a glance">
+              <div class="wing l"></div><div class="wing r num"></div>
+              <div class="nc"></div>
+            </div>
+            <div class="desk-window yt">
+              <div class="yt-top">
+                <div class="tl-dots"><i></i><i></i><i></i></div>
+                <img src="assets/YouTubeIcon.png" alt=""><b>YouTube</b>
+                <span class="yt-search">Search</span>
+              </div>
+              <div class="yt-main">
+                <div>
+                  <div class="yt-player">
+                    <div class="yt-scene"><span class="yt-chip">M4</span></div>
+                    <div class="yt-ctrl"><div class="yt-prog"><i></i></div><div class="yt-row num"><span>❚❚</span><span>1:02:14 / 1:24:30</span></div></div>
+                  </div>
+                  <div class="yt-title">How the M4 chip actually works</div>
+                  <div class="yt-ch"><i></i><span>Silicon Deep Dives · 1.2M views</span></div>
+                </div>
+                <div class="yt-side">
+                  <div><i style="background:linear-gradient(135deg,#3b2b6e,#c0587b)"></i><span></span></div>
+                  <div><i style="background:linear-gradient(135deg,#1d4e5f,#7fd0c3)"></i><span></span></div>
+                  <div><i style="background:linear-gradient(135deg,#5b3a1a,#e8a24a)"></i><span></span></div>
+                  <div><i style="background:linear-gradient(135deg,#1e2a4a,#5b8def)"></i><span></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nudge-controls" id="nudgeControls">
+            <button class="chip" data-nudge="hour"><img src="assets/YouTubeIcon.png" alt="">Watch for an hour</button>
+            <button class="chip" data-nudge="combined"><img src="assets/TwitchIcon.png" alt="">Pass 2 hours of watching</button>
+            <button class="chip" data-nudge="focus">⏱ Finish a focus</button>
+            <button class="chip" data-nudge="glance">Hover the notch</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 CATEGORIES ============ -->
+  <section id="categories">
+    <div class="wrap split">
+      <div class="rv">
+        <div class="kicker">04</div>
+        <h2>Every app and site has a side. You pick it.</h2>
+        <div class="prose">
+          <p>Time at your Mac splits into <b>focus</b>, <b>neutral</b> and <b>distraction</b>, by the site in front, or else the app. Sensible defaults to start.</p>
+          <p>Right-click any app, site or single page to move it, and your history re-colors with it. Research on YouTube can count as focus while the rabbit hole doesn't.</p>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="cat-strip">
+          <div class="strip" id="catStrip"></div>
+          <div class="hours" id="catHours"></div>
+        </div>
+        <div class="cat-cols" id="catCols"></div>
+        <p class="small-note">Try it: click an app to move it to the next side. The strip above is the hero's day, and it changes too.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 GOALS ============ -->
+  <section id="goals">
+    <div class="wrap split rev">
+      <div class="rv">
+        <div class="kicker">05</div>
+        <h2>Goals that can say no for you</h2>
+        <div class="prose">
+          <p>Set a goal against your own 7-day average: less screen time, less YouTube, less social, or more focus. The Goals page shows each day against it, so you can see whether it's changing anything.</p>
+          <p>Any limit can warn you from the notch first, then <b>block the site at a time</b> or <b>during a focus session</b>. Nothing is quit and no work is lost: the app hides, the tab goes blank, and the notch says why.</p>
+        </div>
+      </div>
+      <div class="card rv">
+        <div class="browser" id="gBrowser">
+          <div class="bar">
+            <div class="tl-dots" style="padding:0"><i></i><i></i><i></i></div>
+            <div class="url"><img src="assets/YouTubeIcon.png" alt=""><span id="gUrl">youtube.com/watch</span></div>
+          </div>
+          <div class="page">
+            <div class="notch" id="gNotch" style="width:140px;height:22px;border-radius:0 0 11px 11px">
+              <div class="nc" style="top:22px"></div>
+            </div>
+            <div class="video" style="margin-top:30px"><div class="vbar"></div></div>
+            <div class="vlines"><i style="width:55%"></i></div>
+            <div class="blank">about:blank</div>
+          </div>
+        </div>
+        <div class="goal-card">
+          <div class="ring" id="gRing"></div>
+          <div><div class="gt">YouTube · 1h a day</div><div class="gs num" id="gStatus"></div></div>
+          <span class="lock" id="gLock">Warns at 30m · Blocks at 1h</span>
+        </div>
+        <div class="slider-row">
+          <label for="gSlider"><span>YouTube today</span><b class="num" id="gVal"></b></label>
+          <input type="range" id="gSlider" min="0" max="90" value="12" step="1">
+          <div class="marks"><span style="left:0%;transform:none">0</span><span style="left:33.3%">30m warn</span><span style="left:66.6%">1h block</span><span style="left:100%;transform:translateX(-100%)">1h 30m</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 FOCUS ============ -->
+  <section id="focus">
+    <div class="wrap split">
+      <div class="rv">
+        <div class="kicker">06</div>
+        <h2>A focus timer that keeps distractions out</h2>
+        <div class="prose">
+          <p>Start a focus from the menu bar or the notch: 25 minutes on, 5 off, a longer break every fourth round, all adjustable. When one ends, the notch says what's next and the next one starts on its own.</p>
+          <p>Turn on <b>block during Focus</b> for a goal, and its apps and sites stay closed while a focus runs, even on a day you're under the limit. Breaks are yours: the block lifts the moment a break starts, or the moment you stop.</p>
+        </div>
+      </div>
+      <div class="card fx rv">
+        <div class="notch" id="fxNotch" aria-label="Glance: focus timer on the left, today's screen time on the right">
+          <div class="wing l" id="fxWingL"></div><div class="wing r num">5h 12m</div>
+          <div class="nc"></div>
+        </div>
+        <div class="fx-top">
+          <div class="demo-switch" role="group" aria-label="Timer phase" id="fxSwitch">
+            <button aria-pressed="true" data-fx="focus">Focus</button>
+            <button aria-pressed="false" data-fx="break">Break</button>
+          </div>
+          <div class="fx-note" id="fxNote"></div>
+        </div>
+        <div class="fx-sites" id="fxSites"></div>
+        <div class="small-note">From the YouTube and Social Media goals, both set to block during Focus. Click a site to try it.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 ALSO INCLUDED ============ -->
+  <section id="more">
+    <div class="wrap">
+      <div class="rv">
+        <div class="kicker">07</div>
+        <h2>Also included</h2>
+        <div class="prose"><p>Nine smaller things that come with NotchUsage.</p></div>
+      </div>
+      <div class="grid9">
+        <div class="card feat rv">
+          <div class="vis desk">
+            <div class="mini-glance" aria-label="Focus timer on the left of the notch, today's screen time on the right">
+              <span class="mg-l" id="mgTimer"></span><span class="mg-r num">5h 12m</span>
+            </div>
+          </div>
+          <div class="txt"><h4>Focus timer</h4><p>25 minutes on, 5 off, a longer break every fourth round, all adjustable. The notch says what's next.</p></div>
+        </div>
+        <div class="card feat rv">
+          <div class="vis">
+            <div class="picks"><div class="pk-n num">14<small>pickups today</small></div><div class="pk-line" id="pkLine"></div><div class="pk-h"><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span></div></div>
+          </div>
+          <div class="txt"><h4>Pickups</h4><p>Each unlock of your Mac counts, shown under the day's total, or as a daily average for a week or month.</p></div>
+        </div>
+        <div class="card feat rv">
+          <div class="vis"><div class="icon-cloud" id="iconCloud"></div></div>
+          <div class="txt"><h4>Every site, by name</h4><p>Every site is tracked and shown by its brand name and real icon, never a bare domain. Click one for its pages and videos.</p></div>
+        </div>
+        <div class="card feat rv">
+          <div class="vis" style="display:block">
+            <div class="pagerow"><img src="assets/YouTubeIcon.png" alt="">Lecture 4: Linear Algebra</div>
+            <div class="ctx"><div><i class="sw f"></i>Focus</div><div class="hl"><i class="sw n" style="background:#fff;opacity:.6"></i>Neutral</div><div><i class="sw d"></i>Distraction</div></div>
+            <div class="rule">Title contains <b>“lecture”</b> → Focus</div>
+          </div>
+          <div class="txt"><h4>Pages and keyword rules</h4><p>Give a single page its own category, or match page titles by keyword, so one site can split across categories.</p></div>
+        </div>
+        <div class="card feat rv">
+          <div class="vis"><div class="themes" id="themes"></div></div>
+          <div class="txt"><h4>Four color themes</h4><p>Vivid, Calm, Ocean or Berry. Every chart re-colors at once, in light and dark. Try one: this page follows.</p></div>
+        </div>
+        <div class="card feat rv">
+          <div class="vis">
+            <div class="twins">
+              <div class="twin"><div class="mini-s"><div class="mini-notch big"><img src="assets/YouTubeIcon.png" alt="">1 hour</div></div>Your screen</div>
+              <div class="twin"><div class="mini-s"><span class="rec">REC</span><div class="mini-notch"></div></div>The recording</div>
+            </div>
+          </div>
+          <div class="txt"><h4>Hidden from screen shares</h4><p>Nudges and the glance never show up in screen sharing, calls or recordings.</p></div>
+        </div>
+        <div class="card feat rv">
+          <div class="vis"><div class="ext"><div class="drop"><img src="assets/XIcon.png" alt=""><span><b>1 hour</b> of X today</span></div></div></div>
+          <div class="txt"><h4>No notch? No problem</h4><p>On an external display or an older Mac, panels drop from the top center of the screen you're using.</p></div>
+        </div>
+        <div class="card feat rv">
+          <div class="vis">
+            <div class="qh">
+              <div class="qh-head"><svg width="16" height="16" viewBox="0 0 16 16" style="color:var(--accent)"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7z" fill="currentColor"/></svg><b class="num">10 PM – 8 AM</b></div>
+              <div class="qh-bar">
+                <i class="q" style="left:0;width:33.33%"></i><i class="q" style="left:91.67%;width:8.33%"></i>
+                <em style="left:45%"></em><em style="left:62%"></em><em style="left:79%"></em>
+                <em class="off" style="left:96%"></em><em class="off" style="left:12%"></em>
+              </div>
+              <div class="qh-h num"><span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span></div>
+              <div class="qh-key"><span><i class="on"></i>Nudge</span><span><i class="off"></i>Held back</span></div>
+            </div>
+          </div>
+          <div class="txt"><h4>Quiet hours</h4><p>Pick the hours nudges rest, and turn them off site by site.</p></div>
+        </div>
+        <div class="card feat rv">
+          <div class="vis"><div class="pod" id="pod"></div></div>
+          <div class="txt"><h4>Parts of the day</h4><p>Week and month split into morning, afternoon, evening and night, each with its top apps and sites.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section id="pricing">
+    <div class="wrap center">
+      <div class="rv">
+        <div class="kicker">08</div>
+        <h2>One price, yours to keep</h2>
+        <div class="prose"><p>Buy it once, updates included. Not for you? Get a refund within 14 days.</p></div>
+      </div>
+      <div class="price-card rv">
+        <div style="font-weight:600">NotchUsage for Mac</div>
+        <div class="price-row"><span class="price num">$1</span><span class="was num">$4.99</span></div>
+        <div style="color:var(--muted);font-size:14px">Launch price for the first 100 buyers, then $4.99.</div>
+        <div class="seats">
+          <div class="track"><i id="seatBar"></i></div>
+          <div class="num"><span data-seats-text></span><span>then $4.99</span></div>
+        </div>
+        <ul class="checks">
+          <li>Watching time, apart from open time</li>
+          <li>Focus, neutral and distraction for every app, site and page</li>
+          <li>Hourly nudges and a glance from the notch</li>
+          <li>Timeline, Insights and Goals, with optional blocking</li>
+          <li>Focus timer, pickups and four color themes</li>
+        </ul>
+        <!-- TODO: link to the Dodo Payments checkout -->
+        <a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Buy for $1</a>
+        <div class="fine">One-time payment · 14-day refund, no questions · macOS 14 or later</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="center rv"><h2>Questions</h2></div>
+      <div class="faq rv">
+        <details><summary>How does it know I'm watching?</summary><p>Every 5 seconds it checks which tab is in front and what macOS reports as playing. A minute counts as watching only when the front tab's title matches what's playing. Media in another tab counts as listening, kept separate.</p></details>
+        <details><summary>What counts as focus or distraction?</summary><p>Work apps and sites start as focus, feeds and video sites as distraction, everything else neutral. Right-click any app, site or page to change it, or add keyword rules for page titles. Changes apply to past days too.</p></details>
+        <details><summary>Will it nag me?</summary><p>No. Nudges appear for 7 seconds and close themselves, with no buttons and no decision to make. Set quiet hours, or turn nudges off per site.</p></details>
+        <details><summary>Does it block things?</summary><p>Only if you ask it to. A goal can block an app or site at a time of day or during a focus session. The app hides, the tab goes blank, nothing is quit. To lift it, edit the goal or stop the focus session.</p></details>
+        <details><summary>Which browsers work?</summary><p>Safari, Chrome, Arc, Brave and Edge. Firefox isn't supported because it doesn't let other apps read its tabs. Time in every other app is tracked without any permission.</p></details>
+        <details><summary>What if my Mac doesn't have a notch?</summary><p>Panels drop from the top center of the active screen instead, and everything else works the same.</p></details>
+        <details><summary>Does it show up when I share my screen?</summary><p>No. Nudges and the glance are hidden from screen sharing and recordings.</p></details>
+        <details><summary>What if it doesn't fit how I work?</summary><p>Email within 14 days of buying and we'll refund it, no questions asked.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap rv">
+      <svg width="72" height="72" style="margin:0 auto 24px;display:block"><use href="#logo"/></svg>
+      <h2>See where the hours really go</h2>
+      <div class="cta-row"><a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Get NotchUsage for $1</a></div>
+      <div class="meta num"><span class="hot" data-seats-text></span><span>macOS 14 or later</span></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 NotchUsage</span>
+    <nav aria-label="Legal">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="refunds.html">Refunds</a>
+      <!-- TODO(ship): replace support@notchusage.example with the real support address (search the repo for it). -->
+      <a href="mailto:support@notchusage.example">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+
+/* ---------------- shared data ---------------- */
+const SOLD = 63, SEATS = 100; // launch seats sold so far
+document.querySelectorAll('[data-seats-text]').forEach(el => el.textContent = `${SEATS - SOLD} of ${SEATS} left at $1`);
+document.getElementById('seatBar').style.width = `${SOLD / SEATS * 100}%`;
+
+const SITES = {
+  github:   { name: 'GitHub', icon: 'GitHubIcon' },
+  figma:    { name: 'Figma', icon: 'FigmaIcon' },
+  claude:   { name: 'Claude', icon: 'ClaudeIcon' },
+  notion:   { name: 'Notion', icon: 'NotionIcon' },
+  chatgpt:  { name: 'ChatGPT', icon: 'ChatGPTIcon' },
+  slack:    { name: 'Slack', icon: 'SlackIcon' },
+  docs:     { name: 'Google Docs', icon: 'GoogleDocsIcon' },
+  gmail:    { name: 'Gmail', icon: 'GmailIcon' },
+  zoom:     { name: 'Zoom', icon: 'ZoomIcon' },
+  spotify:  { name: 'Spotify', icon: 'SpotifyIcon' },
+  discord:  { name: 'Discord', icon: 'DiscordIcon' },
+  youtube:  { name: 'YouTube', icon: 'YouTubeIcon' },
+  x:        { name: 'X', icon: 'XIcon' },
+  reddit:   { name: 'Reddit', icon: 'RedditIcon' },
+  instagram:{ name: 'Instagram', icon: 'InstagramIcon' },
+  twitch:   { name: 'Twitch', icon: 'TwitchIcon' },
+  netflix:  { name: 'Netflix', icon: 'NetflixIcon' },
+  tiktok:   { name: 'TikTok', icon: 'TikTokIcon' },
+};
+const cat = {
+  github: 'f', figma: 'f', claude: 'f', notion: 'f', chatgpt: 'f',
+  slack: 'n', docs: 'n', gmail: 'n', zoom: 'n', spotify: 'n', discord: 'n',
+  youtube: 'd', x: 'd', reddit: 'd', instagram: 'd', twitch: 'd', netflix: 'd', tiktok: 'd',
+};
+const CATVAR = { f: 'var(--c-focus)', n: 'var(--c-neutral)', d: 'var(--c-dist)' };
+const CATNAME = { f: 'Focus', n: 'Neutral', d: 'Distraction' };
+const icon = k => `<img src="assets/${SITES[k].icon}.png" alt="">`;
+
+const PAGES = {
+  youtube: [['How the M4 chip actually works', 34], ['Lo-fi beats to code to', 31], ['Every F1 overtake of 2026', 22], ['Making ramen from scratch', 18], ['Why trains are late', 9]],
+  github: [['notchusage / pull requests', 41], ['GRDB.swift · Issues', 28], ['sparkle-project / Sparkle', 22], ['notchusage / Actions', 15]],
+  figma: [['Website v3', 48], ['Notch panel states', 33], ['Icon explorations', 11]],
+  claude: [['Timeline drag performance', 34], ['Release notes draft', 22], ['Regex for page titles', 11]],
+  twitch: [['Speedrun marathon', 31], ['Chess grandmaster stream', 14]],
+  x: [['Home', 21], ['Notifications', 9], ['Search: macOS 26', 4]],
+  netflix: [['The Bear · S3 E4', 48]],
+  reddit: [['r/macapps', 9], ['r/swift', 4]],
+  instagram: [['Reels', 20]],
+  notion: [['Roadmap', 24], ['Launch checklist', 14]],
+  slack: [['#general', 14], ['#design', 8]],
+  gmail: [['Inbox', 18]],
+  docs: [['Launch post', 14]],
+  discord: [['Swift devs · #help', 12]],
+};
+
+// Today, in minutes from midnight: [start, end, site]
+const TODAY = [
+  [542,560,'gmail'],[560,610,'github'],[610,622,'slack'],[622,668,'figma'],[668,681,'x'],[681,712,'claude'],[712,738,'github'],
+  [790,812,'slack'],[812,850,'notion'],[850,880,'youtube'],[880,935,'github'],[935,948,'reddit'],[948,990,'figma'],[990,1004,'docs'],[1004,1040,'claude'],[1040,1060,'instagram'],
+  [1205,1290,'youtube'],[1290,1305,'x'],[1305,1350,'twitch'],[1350,1362,'discord'],[1362,1410,'netflix'],
+];
+const SESSIONS = [[542,738],[790,1060],[1205,1410]];
+const RANGE = [480, 1440]; // 8 AM to midnight, fitted to the day's activity
+
+const fmt = m => { m = Math.round(m); const h = Math.floor(m / 60), r = m % 60; return h ? (r ? `${h}h ${String(r).padStart(2,'0')}m` : `${h}h`) : `${r}m`; };
+const clock = m => { m = ((m % 1440) + 1440) % 1440; let h = Math.floor(m / 60), r = m % 60; const ap = h < 12 ? 'AM' : 'PM'; h = h % 12 || 12; return `${h}:${String(r).padStart(2,'0')} ${ap}`; };
+const hourLbl = m => { let h = Math.floor(m / 60) % 24; const ap = h < 12 ? 'AM' : 'PM'; h = h % 12 || 12; return `${h} ${ap}`; };
+
+function totals(blocks) {
+  const t = { f: 0, n: 0, d: 0, all: 0, bySite: {} };
+  for (const [s, e, k] of blocks) { const m = e - s; t[cat[k]] += m; t.all += m; t.bySite[k] = (t.bySite[k] || 0) + m; }
+  return t;
+}
+function stripHTML(blocks, range = RANGE, opts = {}) {
+  const span = range[1] - range[0];
+  return blocks.map(([s, e, k], i) => {
+    const dim = opts.only && !(s >= opts.only[0] && e <= opts.only[1]);
+    return `<div class="blk${dim ? ' dim' : ''}" data-i="${i}" style="left:${(s - range[0]) / span * 100}%;width:calc(${(e - s) / span * 100}% - 1px);background:${CATVAR[cat[k]]}"></div>`;
+  }).join('');
+}
+function hoursHTML(range = RANGE) {
+  const out = []; for (let m = range[0]; m <= range[1]; m += 240) out.push(`<span style="left:${(m - range[0]) / (range[1] - range[0]) * 100}%">${hourLbl(m)}</span>`);
+  return out.join('');
+}
+function cbarHTML(blocks) {
+  const t = totals(blocks);
+  return `<div class="cbar">${['f','n','d'].filter(c => t[c]).map(c => `<i style="flex:${t[c]};background:${CATVAR[c]}"></i>`).join('')}</div>`;
+}
+function attachTips(stripEl, blocks) {
+  let tip = stripEl.querySelector('.tip');
+  if (!tip) { tip = document.createElement('div'); tip.className = 'tip'; stripEl.appendChild(tip); }
+  stripEl.onmousemove = e => {
+    const b = e.target.closest('.blk'); if (!b) { tip.classList.remove('on'); return; }
+    const [s, en, k] = blocks[+b.dataset.i];
+    tip.innerHTML = `${icon(k)}<span><b>${SITES[k].name}</b> · ${clock(s)}–${clock(en)}</span>`;
+    tip.style.left = (b.offsetLeft + b.offsetWidth / 2) + 'px';
+    tip.classList.add('on');
+  };
+  stripEl.onmouseleave = () => tip.classList.remove('on');
+}
+
+// Seeded week and month, so they look the same on every load
+function rng(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+function fakeDay(seed) {
+  const r = rng(seed), out = []; const pick = a => a[Math.floor(r() * a.length)];
+  const work = ['github','figma','claude','notion','chatgpt','slack','docs','gmail'], fun = ['youtube','x','reddit','twitch','instagram','netflix'];
+  for (const [a, b, funShare] of [[540 + r() * 60, 720 + r() * 40, .15], [780 + r() * 40, 1020 + r() * 60, .2], [1170 + r() * 60, 1350 + r() * 80, .7]]) {
+    if (r() < .12) continue;
+    let t = a;
+    while (t < b) { const len = 8 + r() * 45; out.push([Math.round(t), Math.round(Math.min(b, t + len)), r() < funShare ? pick(fun) : pick(work)]); t += len + (r() < .3 ? 6 : 0); }
+  }
+  return out;
+}
+const WEEK = Array.from({ length: 7 }, (_, i) => i === 6 ? TODAY : fakeDay(11 + i * 7));
+const MONTH = Array.from({ length: 30 }, (_, i) => i === 29 ? TODAY : fakeDay(101 + i * 13));
+const dateLbl = back => { const d = new Date(2026, 9, 8 - back); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); };
+
+/* ---------------- hero panel ---------------- */
+const body = document.getElementById('panelBody');
+const state = { page: 'timeline', range: 'D', session: null, site: null };
+
+function renderTimelineDay() {
+  const t = totals(TODAY);
+  let h = `<div class="headline"><div><div class="big num">${fmt(t.all)}</div><div class="sub">14 pickups</div></div>
+    <div class="legend num">${['f','n','d'].map(c => `<span><i class="sw ${c}"></i>${CATNAME[c]} <b>${fmt(t[c])}</b></span>`).join('')}</div></div>
+    <div class="strip" id="heroStrip">${stripHTML(TODAY, RANGE, { only: state.session != null ? SESSIONS[state.session] : null })}</div>
+    <div class="hours">${hoursHTML()}</div>
+    <div class="sec-title"><span>Sessions</span><span class="num">${SESSIONS.length}</span></div><div class="rows">`;
+  SESSIONS.forEach(([a, b], i) => {
+    const bl = TODAY.filter(x => x[0] >= a && x[1] <= b), open = state.session === i;
+    h += `<button class="srow" data-s="${i}" aria-expanded="${open}"><span class="num">${clock(a)} – ${clock(b)}</span>${cbarHTML(bl)}<span class="len num">${fmt(b - a)}</span></button>`;
+    if (open) {
+      const by = totals(bl).bySite, list = Object.entries(by).sort((p, q) => q[1] - p[1]);
+      h += `<div class="drill">`;
+      for (const [k, m] of list) {
+        const so = state.site === k;
+        h += `<button class="item" data-site="${k}" aria-expanded="${so}">${icon(k)}<span><i class="dot" style="background:${CATVAR[cat[k]]}"></i>${SITES[k].name}</span><span class="t num">${fmt(m)}</span></button>`;
+        if (so && PAGES[k]) {
+          h += `<div class="pages">${PAGES[k].slice(0, 5).map(([p, mm]) => `<div><b>${p}</b><span class="num">${fmt(Math.min(mm, m))}</span></div>`).join('')}</div>`;
+        }
+      }
+      h += `</div>`;
+    }
+  });
+  body.innerHTML = h + `</div>`;
+  attachTips(document.getElementById('heroStrip'), TODAY);
+}
+
+function renderLanes(days, thin) {
+  const all = days.map(totals), avg = all.reduce((s, t) => s + t.all, 0) / days.length;
+  const avgC = c => all.reduce((s, t) => s + t[c], 0) / days.length;
+  let h = `<div class="headline"><div><div class="big num">${fmt(avg)}</div><div class="sub">a day · ${thin ? 13 : 14} pickups a day</div></div>
+    <div class="legend num">${['f','n','d'].map(c => `<span><i class="sw ${c}"></i>${CATNAME[c]} <b>${fmt(avgC(c))}</b></span>`).join('')}</div></div>
+    <div class="lanes${thin ? ' thin' : ''}">`;
+  days.forEach((d, i) => {
+    const back = days.length - 1 - i, lbl = !thin || back % 7 === 0 ? dateLbl(back) : '';
+    h += `<div class="lane" data-back="${back}" title="${dateLbl(back)}"><span class="num">${lbl}</span><div class="strip">${stripHTML(d)}</div><span class="tot num">${thin ? '' : fmt(all[i].all)}</span></div>`;
+  });
+  h += `</div><div class="lane" style="cursor:default"><span></span><div class="hours">${hoursHTML()}</div><span></span></div>`;
+  // parts of the day
+  const parts = [['Morning', 300, 720], ['Afternoon', 720, 1020], ['Evening', 1020, 1320], ['Night', 1320, 1740]];
+  h += `<div class="parts">`;
+  for (const [name, a, b] of parts) {
+    const bl = days.flatMap(d => d.filter(x => x[0] >= a && x[0] < b));
+    const t = totals(bl), top = Object.entries(t.bySite).sort((p, q) => q[1] - p[1]).slice(0, 3);
+    h += `<div><h5>${name}</h5><div class="pv num">${fmt(t.all / days.length)}</div>${cbarHTML(bl)}<div style="margin-top:8px">${top.map(([k, m]) => `<div class="mini"><span>${SITES[k].name}</span><span class="num">${fmt(m / days.length)}</span></div>`).join('')}</div></div>`;
+  }
+  body.innerHTML = h + `</div>`;
+}
+
+function sparks(vals, color) {
+  const mx = Math.max(...vals);
+  return `<div class="sparks">${vals.map(v => `<i style="height:${v / mx * 100}%;background:${color}"></i>`).join('')}</div>`;
+}
+function renderInsights() {
+  const top = (list) => list.map(([k, m]) => `<div class="item" style="cursor:default">${icon(k)}<span>${SITES[k].name}</span><span class="t num">${m}</span></div>`).join('');
+  body.innerHTML = `<div class="ins">
+    <div><h4><i class="sw f"></i>Focus</h4>
+      <div class="fig"><div><span class="v num">3h 21m</span><span class="delta num" style="color:var(--c-focus)">↑ 16%</span><div class="sub">a day</div></div>${sparks([2.4, 3.1, 2.8, 3.9, 3.2, 1.6, 3.5], 'var(--c-focus)')}</div>
+      <div class="q num"><b>48m</b> avg session · <b>2h 06m</b> longest</div>
+      ${top([['github', '1h 14m'], ['figma', '52m'], ['claude', '41m']])}
+    </div>
+    <div><h4><i class="sw d"></i>Distraction</h4>
+      <div class="fig"><div><span class="v num">1h 29m</span><span class="delta num" style="color:var(--c-focus)">↓ 18%</span><div class="sub">a day</div></div>${sparks([1.9, 1.4, 1.7, 1.1, 1.3, 2.2, 1.6], 'var(--c-dist)')}</div>
+      <div class="q num"><b>14m</b> avg session · <b>9m</b> to get back</div>
+      ${top([['youtube', '48m'], ['x', '19m'], ['reddit', '13m']])}
+    </div>
+    <div><h4>Patterns</h4>
+      <div class="pattern">Your focus sessions run <b>80% longer</b> before noon</div>
+      <div class="pattern">After YouTube, getting back to work takes <b>11m</b> on average</div>
+      <div class="pattern">Your longest focus session, <b>2h 06m</b>, beat 1h 31m in the 7 days before</div>
+    </div>
+    <div><h4>Trends</h4>
+      <table class="trends num"><tr><th></th><th>Previous</th><th>Current</th><th>Change</th></tr>
+        <tr><td>Focus time</td><td>20h 12m</td><td>23h 27m</td><td style="color:var(--c-focus)">+16%</td></tr>
+        <tr><td>Distraction</td><td>12h 40m</td><td>10h 23m</td><td style="color:var(--c-focus)">−18%</td></tr>
+        <tr><td>Avg. focus session</td><td>39m</td><td>48m</td><td style="color:var(--c-focus)">+23%</td></tr>
+        <tr><td>Context switches</td><td>412</td><td>356</td><td style="color:var(--c-focus)">−14%</td></tr>
+      </table>
+    </div></div>`;
+}
+
+function ringSVG(frac, color, size = 42, stroke = 4) {
+  const r = (size - stroke) / 2, c = 2 * Math.PI * r;
+  return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="rgba(128,128,128,.25)" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - Math.min(frac, 1))}" style="transition:stroke-dashoffset .4s"/></svg>`;
+}
+function renderGoals() {
+  const goal = 90, keys = ['youtube', 'x', 'twitch', 'reddit'], hues = ['var(--c-dist)', '#64D2FF', '#BF5AF2', '#30D158'];
+  const days = WEEK.map(d => { const t = totals(d); const o = keys.map(k => t.bySite[k] || 0); return { parts: o, rest: t.d - o.reduce((a, b) => a + b, 0) }; });
+  const mx = 240, today = totals(TODAY);
+  let bars = days.map((d, i) => `<div class="gbar">${d.parts.map((m, j) => m ? `<i style="height:${m / mx * 100}%;background:${hues[j]}"></i>` : '').join('')}${d.rest ? `<i style="height:${d.rest / mx * 100}%;background:#48484A"></i>` : ''}<span class="num">${i === 6 ? 'Today' : dateLbl(6 - i).split(' ')[1]}</span></div>`).join('');
+  body.innerHTML = `<div class="goal-top"><div>
+      <h4 style="margin:0;font-size:13px;color:var(--panel-muted);font-weight:600">Distraction</h4>
+      <div class="big num" style="margin-top:6px">${fmt(today.d)} <span style="font-size:20px;color:var(--panel-muted);font-weight:500">/ ${fmt(goal)}</span></div>
+      <div class="gbars">${bars}<div class="gline" style="bottom:calc(20px + ${goal / mx * 100}% * (170 / 190))"><em>1h 30m</em></div></div>
+    </div>
+    <div class="gkey num">${keys.map((k, j) => `<div><i class="sw" style="background:${hues[j]}"></i><span>${SITES[k].name}</span><span class="t">${fmt(today.bySite[k] || 0)}</span></div>`).join('')}
+      <div><i class="sw" style="background:#48484A"></i><span>Everything else</span><span class="t">${fmt(today.d - keys.reduce((s, k) => s + (today.bySite[k] || 0), 0))}</span></div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="ring">${ringSVG(.82, 'var(--c-focus)')}<span class="ico" style="background:none;color:var(--c-focus)">◎</span></div><div><div>Focus Time</div><div class="t num">42m to go</div></div></div>
+      <div class="tile"><div class="ring">${ringSVG(1.05, 'var(--c-dist)')}${icon('youtube')}</div><div><div>YouTube</div><div class="t num">Over by 5m</div></div></div>
+      <div class="tile"><div class="ring">${ringSVG(.45, '#30D158')}${icon('instagram')}</div><div><div>Social Media</div><div class="t num">20m / 45m</div></div></div>
+      <div class="tile"><div class="ring">${ringSVG(.7, '#30D158')}<span class="ico" style="background:none">⌚︎</span></div><div><div>Screen Time</div><div class="t num">${fmt(today.all)} / 9h</div></div></div>
+    </div>`;
+}
+
+function renderPanel() {
+  document.getElementById('rangeSeg').style.visibility = state.page === 'timeline' ? 'visible' : 'hidden';
+  const pd = document.getElementById('pDate');
+  if (state.page === 'insights') { pd.textContent = 'Last 7 days'; renderInsights(); return; }
+  if (state.page === 'goals') { pd.textContent = 'Goals'; renderGoals(); return; }
+  if (state.range === 'D') { pd.textContent = 'Thu, Oct 8'; renderTimelineDay(); }
+  else if (state.range === 'W') { pd.textContent = 'Oct 2 – 8'; renderLanes(WEEK, false); }
+  else { pd.textContent = 'Sep 9 – Oct 8'; renderLanes(MONTH, true); }
+}
+document.getElementById('heroPanel').addEventListener('click', e => {
+  const pg = e.target.closest('[data-page]'), rg = e.target.closest('[data-range]');
+  const s = e.target.closest('[data-s]'), site = e.target.closest('[data-site]'), lane = e.target.closest('[data-back]');
+  if (pg) { state.page = pg.dataset.page; pg.parentElement.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === pg)); }
+  else if (rg) { state.range = rg.dataset.range; rg.parentElement.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === rg)); }
+  else if (s) { const i = +s.dataset.s; state.session = state.session === i ? null : i; state.site = null; }
+  else if (site) { state.site = state.site === site.dataset.site ? null : site.dataset.site; }
+  else if (lane && lane.dataset.back === '0') { state.range = 'D'; document.querySelectorAll('[data-range]').forEach(b => b.setAttribute('aria-pressed', b.dataset.range === 'D')); }
+  else return;
+  renderPanel();
+});
+state.session = 2; // open the evening session so the drill-down is visible on load
+renderPanel();
+
+/* Screen Time look-alike */
+function renderST() {
+  const hourly = Array(24).fill(0);
+  for (const [s, e] of TODAY) for (let m = s; m < e; m++) hourly[Math.floor(m / 60)]++;
+  const t = totals(TODAY), list = Object.entries(t.bySite).sort((p, q) => q[1] - p[1]).slice(0, 6), mx = list[0][1];
+  document.getElementById('stView').innerHTML = `<div class="stsub">Screen Time · Today</div><div class="stbig num">${fmt(t.all)}</div>
+    <div class="stbars">${hourly.map(v => `<i style="height:${v / 60 * 100}%"></i>`).join('')}</div>
+    <div class="sthours"><span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span></div>
+    <div style="margin-top:22px">${list.map(([k, m]) => `<div class="strow">${icon(k)}<span>${k === 'youtube' || k === 'x' || k === 'reddit' || k === 'twitch' || k === 'netflix' || k === 'instagram' ? SITES[k].name.toLowerCase().replace(/ /g, '') + '.com' : SITES[k].name}</span><span class="bar" style="width:${m / mx * 100}%"></span><span class="num">${fmt(m)}</span></div>`).join('')}</div>`;
+}
+renderST();
+document.querySelectorAll('[data-hero]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-hero]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  const st = b.dataset.hero === 'st';
+  document.getElementById('stView').hidden = !st;
+  document.getElementById('heroPanel').hidden = st;
+}));
+
+/* ---------------- 01 open vs watching ---------------- */
+const OW = [
+  { k: 'youtube', open: 150, w: 72, l: 0, note: 'Paused for 48 minutes' },
+  { k: 'twitch', open: 129, w: 22, l: 91, note: 'Running behind your editor' },
+  { k: 'x', open: 69, w: 18, l: 0, note: 'Mostly scrolling' },
+  { k: 'netflix', open: 58, w: 54, l: 0, note: 'Watched it through' },
+];
+function renderOW(mode) {
+  const mx = Math.max(...OW.map(r => r.open));
+  document.getElementById('owRows').innerHTML = OW.map(r => {
+    const nu = mode === 'nu', o = r.open - r.w - r.l;
+    const segs = nu
+      ? [[r.w, 'var(--s-watch)'], [r.l, 'var(--s-listen)'], [o, 'var(--s-open)']]
+      : [[r.open, 'var(--faint)'], [0, 'var(--s-listen)'], [0, 'var(--s-open)']];
+    return `<div class="ow-row">${icon(r.k)}<div><div class="ow-name">${SITES[r.k].name}<small style="opacity:${nu ? 1 : 0}">${r.note}</small></div>
+      <div class="ow-bar" style="width:${r.open / mx * 100}%">${segs.map(([m, c]) => `<i style="width:${m / r.open * 100}%;background:${c}"></i>`).join('')}</div></div>
+      <div class="ow-time num">${nu ? fmt(r.w) : fmt(r.open)}<small>${nu ? (r.l ? `+ ${fmt(r.l)} listening` : 'watching') : 'open'}</small></div></div>`;
+  }).join('');
+  const sum = f => fmt(OW.reduce((s, r) => s + f(r), 0));
+  document.getElementById('owTotal').textContent = mode === 'nu' ? `${sum(r => r.w)} watching` : `${sum(r => r.open)} on these sites`;
+  document.getElementById('owLegend').style.opacity = mode === 'nu' ? 1 : 0;
+}
+renderOW('nu');
+document.querySelectorAll('[data-ow]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-ow]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  renderOW(b.dataset.ow);
+}));
+
+/* ---------------- 03 notch nudge ---------------- */
+const notch = document.getElementById('notch'), nc = notch.querySelector('.nc');
+const wingL = notch.querySelector('.wing.l'), wingR = notch.querySelector('.wing.r');
+let foldTimer = null, mode = null, hoverHold = false;
+const NUDGES = {
+  hour: { w: 400, h: 92, html: `<div class="nmsg">${icon('youtube')}<span><b>1 hour</b> of YouTube today</span></div>` },
+  combined: { w: 420, h: 92, html: `<div class="nmsg"><span class="ico" style="background:var(--s-watch)">▶</span><span><b>2 hours</b> of watching today</span></div>` },
+  focus: { w: 420, h: 100, html: `<div class="nmsg"><span class="ico" style="background:var(--c-focus)">⏱</span><span><b>Focus done</b> · 5 min break<small>The break starts on its own</small></span></div>` },
+};
+function openNotch(kind) {
+  clearTimeout(foldTimer); mode = kind; notch.classList.add('open');
+  document.querySelectorAll('[data-nudge]').forEach(b => b.setAttribute('aria-pressed', b.dataset.nudge === kind));
+  if (kind === 'glance') {
+    const t = totals(TODAY), list = Object.entries(t.bySite).filter(([k]) => cat[k] === 'd').sort((p, q) => q[1] - p[1]).slice(0, 4);
+    wingL.innerHTML = `<span class="play">▶</span>`; wingR.textContent = fmt(t.all);
+    nc.innerHTML = `<div class="gl-rows num">${list.map(([k, m]) => `<div>${icon(k)}<span>${SITES[k].name}</span><span>${fmt(m)}</span></div>`).join('')}</div>`;
+    notch.style.width = '400px'; notch.style.height = (30 + 22 + list.length * 24) + 'px';
+    return;
+  }
+  const n = NUDGES[kind];
+  wingL.innerHTML = ''; wingR.textContent = '';
+  nc.innerHTML = n.html + `<div class="nprog"><i></i></div>`;
+  notch.style.width = n.w + 'px'; notch.style.height = n.h + 'px';
+  const bar = nc.querySelector('.nprog i');
+  bar.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 7000, easing: 'linear', fill: 'forwards' });
+  foldTimer = setTimeout(foldNotch, 7000);
+}
+function foldNotch() {
+  clearTimeout(foldTimer); mode = null; notch.classList.remove('open');
+  notch.style.width = ''; notch.style.height = '';
+  document.querySelectorAll('[data-nudge]').forEach(b => b.setAttribute('aria-pressed', false));
+}
+document.getElementById('nudgeControls').addEventListener('click', e => {
+  const b = e.target.closest('[data-nudge]'); if (!b) return;
+  if (mode === b.dataset.nudge) foldNotch(); else openNotch(b.dataset.nudge);
+});
+notch.addEventListener('mouseenter', () => { if (!mode) { hoverHold = true; openNotch('glance'); } else if (mode !== 'glance') { const a = nc.querySelector('.nprog i')?.getAnimations()[0]; a?.pause(); clearTimeout(foldTimer); } });
+notch.addEventListener('mouseleave', () => {
+  if (mode === 'glance' && hoverHold) { hoverHold = false; foldNotch(); }
+  else if (mode && mode !== 'glance') { const a = nc.querySelector('.nprog i')?.getAnimations()[0]; if (a) { a.play(); foldTimer = setTimeout(foldNotch, (7000 - a.currentTime)); } }
+});
+notch.addEventListener('click', () => { if (mode && mode !== 'glance') foldNotch(); });
+// Show one nudge when the section first scrolls into view
+let nudged = false;
+
+/* ---------------- 04 categories ---------------- */
+const CAT_APPS = ['github','figma','claude','notion','chatgpt','slack','docs','gmail','zoom','spotify','discord','youtube','x','reddit','instagram','twitch','netflix','tiktok'];
+function renderCats(moved) {
+  const t = totals(TODAY);
+  document.getElementById('catStrip').innerHTML = stripHTML(TODAY);
+  document.getElementById('catHours').innerHTML = hoursHTML();
+  attachTips(document.getElementById('catStrip'), TODAY);
+  document.getElementById('catCols').innerHTML = ['f','n','d'].map(c => `<div class="cat-col"><h5><i class="sw ${c}"></i>${CATNAME[c]}</h5><div class="ct num">${fmt(t[c])} today</div>
+    <div class="chips">${CAT_APPS.filter(k => cat[k] === c).map(k => `<button class="app-chip${k === moved ? ' moved' : ''}" data-cat="${k}" title="Move ${SITES[k].name}">${icon(k)}${SITES[k].name}</button>`).join('')}</div></div>`).join('');
+}
+document.getElementById('catCols').addEventListener('click', e => {
+  const b = e.target.closest('[data-cat]'); if (!b) return;
+  const k = b.dataset.cat; cat[k] = { f: 'n', n: 'd', d: 'f' }[cat[k]];
+  renderCats(k); renderPanel();
+});
+renderCats();
+
+/* ---------------- 05 goals ---------------- */
+const gS = document.getElementById('gSlider'), gNotch = document.getElementById('gNotch'), gnc = gNotch.querySelector('.nc');
+let gPhase = 'none', gTimer;
+function gMessage(html, w, h) {
+  clearTimeout(gTimer);
+  gnc.innerHTML = html; gNotch.style.width = w + 'px'; gNotch.style.height = h + 'px'; gNotch.classList.add('open');
+  gTimer = setTimeout(() => { gNotch.style.width = '140px'; gNotch.style.height = '22px'; gNotch.classList.remove('open'); }, 3200);
+}
+function renderGoal() {
+  const v = +gS.value, phase = v >= 60 ? 'block' : v >= 30 ? 'warn' : 'none';
+  document.getElementById('gVal').textContent = fmt(v);
+  document.getElementById('gRing').innerHTML = ringSVG(v / 60, v >= 60 ? 'var(--c-dist)' : v >= 45 ? 'var(--c-dist)' : '#30D158', 48, 4) + icon('youtube');
+  document.getElementById('gStatus').textContent = v >= 60 ? 'Blocked until midnight' : v >= 30 ? `Warning reached · ${fmt(60 - v)} until it blocks` : `${fmt(v)} of 1h`;
+  const lock = document.getElementById('gLock');
+  lock.textContent = v >= 60 ? '🔒 Blocked' : 'Warns at 30m · Blocks at 1h'; lock.classList.toggle('on', v >= 60);
+  document.getElementById('gBrowser').classList.toggle('blocked', v >= 60);
+  document.getElementById('gUrl').textContent = v >= 60 ? 'about:blank' : 'youtube.com/watch';
+  if (phase !== gPhase) {
+    if (phase === 'warn' && gPhase === 'none') gMessage(`<div class="nmsg" style="font-size:13px">${icon('youtube')}<span>YouTube today<small>${fmt(60 - v)} until it blocks</small></span><b style="margin-left:auto;font-size:20px">${fmt(v)}</b></div>`, 300, 82);
+    if (phase === 'block') gMessage(`<div class="nmsg" style="font-size:13px">${icon('youtube')}<span><b>YouTube is blocked</b><small>Until midnight</small></span></div>`, 280, 80);
+    gPhase = phase;
+  }
+}
+gS.addEventListener('input', renderGoal);
+gNotch.querySelector('.nc').style.padding = '6px 16px 12px';
+renderGoal();
+
+/* ---------------- 06 focus ---------------- */
+const FX_SITES = ['youtube', 'reddit', 'x', 'instagram'];
+// SF Symbols "timer" and "cup.and.saucer.fill", as the glance shows them
+const FX_ICON = {
+  focus: `<svg viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8.5" r="6"/><path d="M8 8.5 5.6 6.1M8 1.2v1.3"/></svg>`,
+  break: `<svg viewBox="0 0 16 16" fill="var(--s-listen)"><path d="M2.5 5h9v4a3.5 3.5 0 0 1-3.5 3.5H6A3.5 3.5 0 0 1 2.5 9zM11.5 6h.8a1.7 1.7 0 0 1 0 3.4h-1"/><rect x="1.5" y="13.3" width="11" height="1.4" rx=".7"/></svg>`,
+};
+const FX = { focus: { len: 25 * 60 }, break: { len: 5 * 60 } };
+const fxWingL = document.getElementById('fxWingL'), fxNotch = document.getElementById('fxNotch'), fxnc = fxNotch.querySelector('.nc');
+let fxPhase = 'focus', tm = 18 * 60 + 42, fxTimer;
+function fxMessage(html, w, h) {
+  clearTimeout(fxTimer);
+  fxnc.innerHTML = html; fxNotch.style.width = w + 'px'; fxNotch.style.height = h + 'px'; fxNotch.classList.add('open');
+  fxTimer = setTimeout(() => { fxNotch.style.width = ''; fxNotch.style.height = ''; fxNotch.classList.remove('open'); }, 3200);
+}
+function renderTimer() {
+  fxWingL.innerHTML = `${FX_ICON[fxPhase]}<span class="num">${Math.floor(tm / 60)}:${String(tm % 60).padStart(2, '0')}</span>`;
+}
+function renderFocus() {
+  const on = fxPhase === 'focus';
+  document.querySelectorAll('[data-fx]').forEach(b => b.setAttribute('aria-pressed', b.dataset.fx === fxPhase));
+  document.getElementById('fxNote').textContent = on ? 'Blocking 4 sites until this focus ends' : 'Nothing blocked until the next focus';
+  document.getElementById('fxSites').innerHTML = FX_SITES.map(k => `<button class="fx-site" data-site="${k}">${icon(k)}${SITES[k].name}<span class="pill${on ? ' on' : ''}">${on ? '🔒 Blocked' : 'Open'}</span></button>`).join('');
+  renderTimer();
+}
+function setPhase(p) {
+  if (p === fxPhase) return;
+  fxPhase = p; tm = FX[p].len; renderFocus();
+  if (p === 'break') fxMessage(`<div class="nmsg" style="font-size:13px"><span class="ico" style="background:var(--c-focus);display:grid;place-items:center">⏱</span><span><b>Focus done</b><small>5 min break</small></span></div>`, 320, 84);
+  else fxMessage(`<div class="nmsg" style="font-size:13px"><span class="ico" style="background:var(--c-focus);display:grid;place-items:center">⏱</span><span><b>Break over</b><small>25 min focus</small></span></div>`, 320, 84);
+}
+document.getElementById('fxSwitch').addEventListener('click', e => { const b = e.target.closest('[data-fx]'); if (b) setPhase(b.dataset.fx); });
+document.getElementById('fxSites').addEventListener('click', e => {
+  const b = e.target.closest('[data-site]'); if (!b || fxPhase !== 'focus') return;
+  const k = b.dataset.site;
+  fxMessage(`<div class="nmsg" style="font-size:13px">${icon(k)}<span><b>${SITES[k].name} is blocked</b><small>Until your Focus session ends</small></span></div>`, 340, 84);
+});
+setInterval(() => { if (tm > 0) { tm--; renderTimer(); } else setPhase(fxPhase === 'focus' ? 'break' : 'focus'); }, 1000);
+renderFocus();
+
+/* ---------------- 07 also included ---------------- */
+// focus timer, in the glance beside the notch
+let mgT = 18 * 60 + 42;
+const mgTimer = document.getElementById('mgTimer');
+function renderMiniGlance() { mgTimer.innerHTML = `${FX_ICON.focus}<span class="num">${Math.floor(mgT / 60)}:${String(mgT % 60).padStart(2, '0')}</span>`; }
+setInterval(() => { mgT = mgT > 0 ? mgT - 1 : 25 * 60; renderMiniGlance(); }, 1000);
+renderMiniGlance();
+// pickups
+document.getElementById('pkLine').innerHTML = [7.6, 8.9, 9.4, 10.8, 11.9, 13.1, 14.2, 15.5, 16.1, 17.6, 19.4, 20.1, 21.8, 22.9]
+  .map((h, i) => `<i style="left:${(h - 6) / 18 * 100}%;height:${50 + (i * 37 % 50)}%;animation-delay:${i * 60}ms"></i>`).join('');
+// icon cloud
+document.getElementById('iconCloud').innerHTML = ['youtube','github','figma','x','notion','twitch','claude','reddit','slack','instagram','netflix','spotify','chatgpt','docs','discord','gmail','zoom','tiktok']
+  .map(k => `<img src="assets/${SITES[k].icon}.png" alt="${SITES[k].name}" title="${SITES[k].name}">`).join('');
+// themes: recolor the whole page
+const THEMES = {
+  Vivid: { f: ['#BF5AF2', '#AF52DE'], n: ['#3A3A3C', '#C7C7CC'], d: ['#FF9F0A', '#FF9500'] },
+  Calm:  { f: ['#199E70', '#1BAF7A'], n: ['#5A5955', '#BDBCB6'], d: ['#D95926', '#EB6834'] },
+  Ocean: { f: ['#2EC4B6', '#1A9E92'], n: ['#3A4A5C', '#B5C2CF'], d: ['#FF6B6B', '#E85555'] },
+  Berry: { f: ['#5B8DEF', '#3A6FD8'], n: ['#4A4560', '#CBC6DE'], d: ['#F06292', '#D94B7B'] },
+};
+let themeName = 'Calm';
+function applyTheme() {
+  const t = THEMES[themeName], i = 0, r = document.documentElement.style;
+  // The analysis panel is black in both appearances, so it keeps the dark neutral.
+  r.setProperty('--c-focus', t.f[i]); r.setProperty('--c-neutral', t.n[0]); r.setProperty('--c-dist', t.d[i]);
+  document.getElementById('themes').innerHTML = Object.entries(THEMES).map(([n, c]) =>
+    `<button class="theme-btn" data-th="${n}" aria-pressed="${n === themeName}"><span class="sws"><i style="background:${c.f[i]}"></i><i style="background:${c.n[0]}"></i><i style="background:${c.d[i]}"></i></span>${n}</button>`).join('');
+}
+document.getElementById('themes').addEventListener('click', e => { const b = e.target.closest('[data-th]'); if (b) { themeName = b.dataset.th; applyTheme(); } });
+applyTheme();
+// parts of the day
+document.getElementById('pod').innerHTML = [['Morning', [70, 20, 10], '2h 12m'], ['Afternoon', [55, 25, 20], '2h 48m'], ['Evening', [15, 20, 65], '1h 51m'], ['Night', [5, 15, 80], '24m']]
+  .map(([n, s, v]) => `<div>${n}<b class="num">${v}</b><div class="cbar">${s.map((x, i) => `<i style="flex:${x};background:${CATVAR['fnd'[i]]}"></i>`).join('')}</div></div>`).join('');
+
+applyTheme();
+
+/* ---------------- reveal on scroll ---------------- */
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver(es => es.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add('in'); io.unobserve(en.target);
+  }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+  const nio = new IntersectionObserver(es => es.forEach(en => {
+    if (en.isIntersecting && !nudged) { nudged = true; setTimeout(() => openNotch('hour'), 600); nio.disconnect(); }
+  }), { threshold: .6 });
+  nio.observe(document.getElementById('nudgeScreen'));
+} else document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+</script>
+</body>
+</html>

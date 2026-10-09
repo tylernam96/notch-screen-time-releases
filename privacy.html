@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy · NotchUsage</title>
+<meta name="description" content="What NotchUsage records, where it's kept (on your Mac), the few things that leave your Mac, and how to delete it all.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/legal.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="NotchUsage home"><span class="brand-mark" aria-hidden="true"><span></span></span>NotchUsage</a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary" href="index.html#pricing">Get NotchUsage</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="legal">
+    <p class="eyebrow">Privacy</p>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Effective 8 October 2026</p>
+
+    <div class="summary">
+      <p>Your screen time stays on your Mac. There is no account and no analytics, and we have no server that receives your activity.
+      The app only goes online to check your license, look for updates and fetch site icons.</p>
+    </div>
+
+    <h2>What the app records</h2>
+    <p>Every few seconds NotchUsage notes what's in front of you, so it can show where your time went. It records:</p>
+    <ul>
+      <li><strong>The app in front</strong>, and how long since you last touched the keyboard or mouse (so time away isn't counted).</li>
+      <li><strong>The front tab in your browser</strong> (Safari, Chrome, Arc, Brave or Edge), only after you allow it in macOS's Automation prompt.
+        It reads the address and title of the active tab in the front window. It keeps the site (for example <code>youtube.com</code>) and the page's title,
+        never the full address, never what's on the page, and never your other tabs.</li>
+      <li><strong>What's playing</strong>: the title and artist or channel that macOS shows as Now Playing, and which app is playing it.
+        This is how it tells watching from just having a tab open.</li>
+      <li><strong>When you unlock your Mac</strong>, and which nudges it showed you.</li>
+      <li><strong>Your settings</strong>: categories, goals, keyword rules and preferences.</li>
+    </ul>
+    <p><strong>Private windows:</strong> incognito windows in Chrome, Arc, Brave and Edge are skipped; nothing about them is recorded.
+      Safari doesn't tell other apps whether a window is private, so <strong>Safari private windows are recorded like any other window</strong>.
+      Use Pause Tracking in the menu bar if you'd rather they weren't.</p>
+    <p>It never records keystrokes, screenshots, screen contents, files, or the contents of web pages.</p>
+
+    <h2>Where it's kept</h2>
+    <p>All of it is stored on your Mac, in <code>~/Library/Application Support/NotchUsage/</code> (your activity in <code>tracking.sqlite</code>, and cached site icons),
+      plus the app's preferences. Detailed samples are kept for 7 days and per-minute summaries for a year. None of it is uploaded, synced or shared, and we can't see it.</p>
+
+    <h2>What leaves your Mac</h2>
+    <p>Only these three things, and none of them include your activity:</p>
+    <ol>
+      <li><strong>License checks, with Dodo Payments.</strong> When you activate a license, the app sends Dodo your license key and your Mac's name
+        (the one in System Settings › General › About). About once a week it sends the key again to confirm it's still valid, and deactivating sends it once more.
+        If you're offline, the app keeps working with the license it has.</li>
+      <li><strong>Update checks.</strong> The app checks for new versions using Sparkle, reading an update feed hosted on GitHub Pages and downloading updates from GitHub.
+        Those requests carry the app's name and version, nothing about how you use it.</li>
+      <li><strong>Site icons.</strong> For a site without a built-in icon, the app downloads that site's own icon (such as <code>example.com/favicon.ico</code>) directly from the site,
+        never through a third-party icon service. The site sees a request from your Mac, as it did when you visited it.</li>
+    </ol>
+    <p>Like any request on the internet, these reveal your IP address to the server that answers them. There's no usage analytics, crash reporting, advertising or tracking of any kind in the app.</p>
+
+    <h2>Buying a license</h2>
+    <p>Purchases are handled by <a href="https://dodopayments.com">Dodo Payments</a>, which is the merchant of record: it takes the payment, handles tax and sends the receipt.
+      Your card and billing details go to Dodo, not to us, and are covered by Dodo's own privacy policy.
+      From Dodo we see your order: your name, email address, country and license key. We use them only to send your license, answer you and handle refunds.</p>
+
+    <h2>Emailing us</h2>
+    <p>If you write to support, we keep your email to reply and to help if the same problem comes back. We don't add you to any mailing list.</p>
+
+    <h2>This website</h2>
+    <p>This site has no analytics or cookies. It loads its font from Google Fonts, which sees your IP address like any server would.</p>
+
+    <h2 id="delete">Delete your data</h2>
+    <ol>
+      <li>If you have a license and are leaving this Mac for good, first deactivate it (below) so it can be used elsewhere.</li>
+      <li>Quit NotchUsage: menu bar icon › Quit NotchUsage.</li>
+      <li>Turn off Launch at Login in the app's Settings, or remove NotchUsage in System Settings › General › Login Items.</li>
+      <li>In Finder, choose Go › Go to Folder…, enter <code>~/Library/Application Support/NotchUsage</code> and move that folder to the Trash.
+        That's all of your recorded activity.</li>
+      <li>To remove preferences too, run <code>defaults delete com.tylernam.NotchUsage</code> in Terminal.
+        The license key sits in your login Keychain as <code>com.tylernam.NotchUsage.license</code>; delete it in Keychain Access if you like.</li>
+      <li>Move NotchUsage from Applications to the Trash, and empty the Trash.</li>
+    </ol>
+    <p>Browser access can be revoked any time in System Settings › Privacy &amp; Security › Automation.</p>
+
+    <h2 id="deactivate">Deactivate a license</h2>
+    <p>Open the menu bar icon › Settings › License › <strong>Deactivate on This Mac</strong>. This frees that activation with Dodo so you can use the key on another Mac.
+      It needs an internet connection. If the Mac is lost or already wiped, email us and we'll free it for you.</p>
+
+    <h2>Children</h2>
+    <p>NotchUsage isn't directed at children, and we don't knowingly collect anything from them. Since activity never leaves the Mac, there's nothing about a child's use for us to hold.</p>
+
+    <h2>Changes</h2>
+    <p>If what the app collects or sends changes, this page will change first, with a new effective date at the top.</p>
+
+    <h2>Contact</h2>
+    <!-- TODO(ship): replace support@notchusage.example with the real support address (search the repo for it). -->
+    <p>Questions about privacy: <a href="mailto:support@notchusage.example">support@notchusage.example</a>.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 NotchUsage</span>
+    <nav aria-label="Legal">
+      <a href="privacy.html" aria-current="page">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="refunds.html">Refunds</a>
+      <!-- TODO(ship): replace support@notchusage.example with the real support address. -->
+      <a href="mailto:support@notchusage.example">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
