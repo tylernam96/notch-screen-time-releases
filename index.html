@@ -398,12 +398,9 @@ table.cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
 .cat-col .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .app-chip {
   display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 5px 9px 5px 5px; border-radius: 999px;
-  background: var(--surface); border: 1px solid var(--border); cursor: pointer; transition: transform .15s;
+  background: var(--surface); border: 1px solid var(--border);
 }
-.app-chip:hover { border-color: var(--border-2); transform: translateY(-1px); }
 .app-chip img, .app-chip .ico { width: 18px; height: 18px; border-radius: 5px; }
-.app-chip.moved { animation: pop .45s; }
-@keyframes pop { 0% { transform: scale(.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 .cat-strip { background: #000; border-radius: 16px; padding: 18px 18px 10px; }
 .cat-strip .strip { margin-top: 0; }
 .cat-strip .hours { color: #8E8E93; }
@@ -751,10 +748,10 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
       <div class="split rev">
         <div class="rv">
           <div class="kicker">03</div>
-          <h2>A nudge from the notch, not a lecture</h2>
+          <h2>Just a Nudge</h2>
           <div class="prose">
-            <p>At each full hour you spend on a site, a small panel grows out of the notch, says so in one line, and folds back after 7 seconds. Again once all your sites together pass 2 hours a day.</p>
-            <p>No buttons, no decision to make, and it never takes your keyboard. Hover the notch any time for today at a glance, or click it for the whole day.</p>
+            <p>At each full hour you spend on a site, a small panel grows out of the notch, and folds back in.</p>
+            <p>No buttons or decisions to make. Just a reminder. Hover the notch at any time to start a pomodoro timer or see your total screen time at a glance. Click in fully to see the whole breakdown.</p>
           </div>
         </div>
         <div class="rv">
@@ -819,7 +816,6 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
           <div class="hours" id="catHours"></div>
         </div>
         <div class="cat-cols" id="catCols"></div>
-        <p class="small-note">Try it: click an app to move it to the next side. The strip above is the hero's day, and it changes too.</p>
       </div>
     </div>
   </section>
@@ -1380,19 +1376,14 @@ let nudged = false;
 
 /* ---------------- 04 categories ---------------- */
 const CAT_APPS = ['github','figma','claude','notion','chatgpt','slack','docs','gmail','zoom','spotify','discord','youtube','x','reddit','instagram','twitch','netflix','tiktok'];
-function renderCats(moved) {
+function renderCats() {
   const t = totals(TODAY);
   document.getElementById('catStrip').innerHTML = stripHTML(TODAY);
   document.getElementById('catHours').innerHTML = hoursHTML();
   attachTips(document.getElementById('catStrip'), TODAY);
   document.getElementById('catCols').innerHTML = ['f','n','d'].map(c => `<div class="cat-col"><h5><i class="sw ${c}"></i>${CATNAME[c]}</h5><div class="ct num">${fmt(t[c])} today</div>
-    <div class="chips">${CAT_APPS.filter(k => cat[k] === c).map(k => `<button class="app-chip${k === moved ? ' moved' : ''}" data-cat="${k}" title="Move ${SITES[k].name}">${icon(k)}${SITES[k].name}</button>`).join('')}</div></div>`).join('');
+    <div class="chips">${CAT_APPS.filter(k => cat[k] === c).map(k => `<span class="app-chip">${icon(k)}${SITES[k].name}</span>`).join('')}</div></div>`).join('');
 }
-document.getElementById('catCols').addEventListener('click', e => {
-  const b = e.target.closest('[data-cat]'); if (!b) return;
-  const k = b.dataset.cat; cat[k] = { f: 'n', n: 'd', d: 'f' }[cat[k]];
-  renderCats(k); renderPanel();
-});
 renderCats();
 
 /* ---------------- 05 goals ---------------- */
