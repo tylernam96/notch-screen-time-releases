@@ -148,78 +148,13 @@ h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -.0
 
 /* 01 nudges */
 .stack { display: flex; flex-direction: column; gap: 14px; }
-.facts { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px; color: var(--muted); }
-.facts li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; }
-.facts li::before { content: ""; width: 8px; height: 8px; border-radius: 3px; background: var(--c-focus); margin-top: 8px; }
-.facts b { color: var(--text); font-weight: 600; }
 
 /* 02 glance */
-.glances { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
+.glances { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 48px; }
 .glances figure { margin: 0; }
 .glances figcaption { margin-top: 18px; }
 .glances h4 { margin: 0 0 4px; font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
 .glances p { margin: 0; font-size: 15px; color: var(--muted); }
-
-/* 03 live day: the app's day page, rebuilt so it can be clicked */
-.live { position: relative; margin-top: 40px; border-radius: 20px; border: 1px solid var(--border-2); overflow: hidden;
-  background: #2a2b22 url(assets/shots/wallpaper.jpg) center top / cover; padding: 0 7% 56px; box-shadow: 0 40px 120px rgba(0,0,0,.5); }
-.lp { background: #000; color: #F5F5F7; border-radius: 0 0 30px 30px; padding: 26px 30px 26px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
-.lp-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
-.lp-big { font-size: 46px; font-weight: 700; letter-spacing: -.03em; line-height: 1; }
-.lp-sub { color: #8E8E93; font-size: 14px; margin-top: 6px; }
-.lp-legend { display: grid; grid-template-columns: auto auto; gap: 4px 22px; font-size: 13.5px; align-items: center; margin-top: 6px; }
-.lp-legend span { display: flex; align-items: center; gap: 8px; color: #C7C7CC; }
-.lp-legend b { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
-.sw { width: 10px; height: 10px; border-radius: 3px; flex: none; transition: background .4s; }
-.lp h5 { margin: 26px 0 10px; font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; align-items: baseline; }
-.lp h5 button { border: 0; background: none; color: #8E8E93; font-size: 13.5px; font-weight: 500; cursor: pointer; padding: 0; }
-.lp h5 button:hover { color: #fff; }
-.lp-strip { position: relative; height: 34px; border-radius: 8px; background: #1C1C1E; }
-.lp-blk { position: absolute; top: 0; bottom: 0; border-radius: 3px; border: 0; padding: 0; cursor: pointer; transition: background .45s, opacity .2s; }
-.lp-blk.dim { opacity: .2; }
-.lp-hours { position: relative; height: 18px; margin-top: 8px; font-size: 11px; color: #8E8E93; }
-.lp-hours span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
-.lp-hours span:first-child { transform: none; } .lp-hours span:last-child { transform: translateX(-100%); }
-.lp-rows { display: flex; flex-direction: column; }
-.lp-row { display: grid; grid-template-columns: 22px 150px 1fr 64px 128px; gap: 12px; align-items: center; padding: 6px 8px; margin: 0 -8px; border-radius: 9px; font-size: 14px; }
-.lp-row:hover, .lp-row.lit { background: #1A1A1C; }
-.lp-row img { width: 22px; height: 22px; border-radius: 6px; }
-.lp-row .nm { display: flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lp-row .nm button { border: 0; background: none; color: #8E8E93; cursor: pointer; padding: 0 4px; font-size: 12px; transition: transform .2s; }
-.lp-row .nm button[aria-expanded="true"] { transform: rotate(90deg); }
-.lp-bar { height: 6px; border-radius: 3px; background: #2C2C2E; overflow: hidden; }
-.lp-bar i { display: block; height: 100%; border-radius: 3px; background: #48484A; transition: background .3s, width .4s; }
-.lp-row:hover .lp-bar i, .lp-row.lit .lp-bar i { background: var(--rc); }
-.lp-row .t { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
-.lp-row.page { font-size: 13px; color: #C7C7CC; }
-.lp-row.page .nm { padding-left: 2px; }
-.cat-btn {
-  justify-self: end; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #2C2C2E; background: #141416; color: #E5E5EA;
-  font-size: 12.5px; font-weight: 500; padding: 4px 10px 4px 9px; border-radius: 999px; cursor: pointer; transition: border-color .2s, background .2s;
-}
-.cat-btn:hover, .cat-btn[aria-expanded="true"] { border-color: #48484A; background: #1C1C1E; }
-.cat-btn .sw { width: 8px; height: 8px; border-radius: 50%; }
-.cat-btn::after { content: "⌄"; font-size: 11px; color: #8E8E93; margin: -3px 0 0 1px; }
-.lp-menu {
-  position: absolute; z-index: 10; min-width: 190px; padding: 5px; border-radius: 10px; background: rgba(44,44,46,.97);
-  border: 1px solid rgba(255,255,255,.12); box-shadow: 0 16px 40px rgba(0,0,0,.5); font-size: 13.5px;
-  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-}
-.lp-menu[hidden] { display: none; }
-.lp-menu .ttl { padding: 5px 10px 6px; font-size: 12px; color: #8E8E93; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
-.lp-menu button { display: grid; grid-template-columns: 14px 10px 1fr; gap: 8px; align-items: center; width: 100%; border: 0; background: none; color: #fff; text-align: left; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 13.5px; }
-.lp-menu button:hover, .lp-menu button:focus-visible { background: var(--accent); outline: none; }
-.lp-menu button .ck { font-size: 12px; }
-.lp-menu hr { border: 0; border-top: 1px solid rgba(255,255,255,.1); margin: 4px 6px; }
-.lp-tip { position: absolute; z-index: 9; pointer-events: none; background: #2C2C2E; color: #fff; font-size: 12px; padding: 6px 10px; border-radius: 8px;
-  white-space: nowrap; transform: translate(-50%, calc(-100% - 8px)); display: flex; gap: 7px; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,.4); }
-.lp-tip img { width: 14px; height: 14px; border-radius: 4px; }
-.lp-tip[hidden] { display: none; }
-.live-note { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-top: 14px; font-size: 13px; color: var(--muted); }
-.live-note button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 13px; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
-.live-note button:hover { color: var(--text); }
-.bump { animation: bump .45s ease; }
-@keyframes bump { 40% { transform: scale(1.06); } }
 
 /* 04 cards */
 .bento { display: grid; gap: 18px; margin-top: 18px; }
@@ -339,12 +274,6 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
   .hero { padding-top: 48px; }
   .shot { border-radius: 14px; }
   .grid, .locks, .glances, .bento.b2, .bento.b3 { grid-template-columns: 1fr; }
-  .live { padding: 0 10px 28px; border-radius: 14px; }
-  .lp { padding: 18px 14px; border-radius: 0 0 20px 20px; }
-  .lp-head { flex-direction: column; }
-  .lp-big { font-size: 38px; }
-  .lp-row { grid-template-columns: 22px 1fr 54px auto; }
-  .lp-row .lp-bar { display: none; }
   .warn { grid-template-columns: 1fr; }
   .ladder .tl { font-size: 10.5px; letter-spacing: .06em; }
   .ladder .here { padding: 5px 10px; font-size: 10.5px; }
@@ -383,7 +312,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
   <div class="wrap">
     <a class="brand" href="#top"><svg><use href="#logo"/></svg>NotchUsage</a>
     <nav class="nav-links">
-      <a href="#nudge">Features</a>
+      <a href="#glance">Features</a>
       <a href="#compare">Compare</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
@@ -402,7 +331,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
     <p class="lede rv">NotchUsage knows when you're actually watching, not just when a tab is open. It sorts every minute into focus, neutral and distraction, and nudges you from the notch while it's still happening.</p>
     <div class="cta-row rv">
       <a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Get NotchUsage for <span data-price>$1</span></a>
-      <a class="btn btn-ghost" href="#nudge">See what it does</a>
+      <a class="btn btn-ghost" href="#glance">See what it does</a>
     </div>
     <div class="meta rv num">
       <span class="hot" data-seats-text></span>
@@ -436,11 +365,28 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
     </div>
   </div>
 
-  <!-- ============ 01 NUDGE ============ -->
+  <!-- ============ 01 GLANCE ============ -->
+  <section id="glance">
+    <div class="wrap">
+      <div class="center rv">
+        <div class="kicker">01</div>
+        <h2>Your day, beside the notch</h2>
+        <div class="prose" style="max-width:640px">
+          <p>Hover the notch for a glance, or keep it showing, and pick what sits on each side. Click it, or press <b>⌃⌥⌘N</b> anywhere, to open the full analysis.</p>
+        </div>
+      </div>
+      <div class="glances">
+        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-focus.jpg" width="780" height="260" alt="Glance with a focus session running: 24:59 left, and a ring at 2h 15m toward today's screen time goal." loading="lazy"></div><figcaption><h4>Focus timer</h4><p>Start a focus from the notch and watch it count down, beside a ring that fills toward today's screen time goal.</p></figcaption></figure>
+        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-current.jpg" width="780" height="260" alt="Glance: YouTube at 42m today on the left, 1h 7m of distraction on the right." loading="lazy"></div><figcaption><h4>Current app today</h4><p>The app or site you're on right now, and how long it's had you today.</p></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 NUDGE ============ -->
   <section id="nudge">
     <div class="wrap split">
       <div class="rv">
-        <div class="kicker">01</div>
+        <div class="kicker">02</div>
         <h2>A nudge from the notch, while it's still happening</h2>
         <div class="prose">
           <p>At every full hour on a site, a small panel grows out of the notch and folds back in after 7 seconds. It counts only what you actually watch, so a paused video or a background tab never adds up.</p>
@@ -449,69 +395,15 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
       <div class="stack rv">
         <div class="shot sm"><img src="assets/shots/nudge-youtube.jpg" width="763" height="181" alt="A nudge under the notch: 1 hour of YouTube today." loading="lazy"></div>
         <div class="shot sm"><img src="assets/shots/nudge-netflix.jpg" width="763" height="181" alt="A nudge under the notch: 2 hours of Netflix today." loading="lazy"></div>
-        <ul class="facts">
-          <li><span><b>Every hour on a site</b>, and once all of them together pass 2 hours</span></li>
-          <li><span><b>Every hour of distraction</b>, across everything you've marked as one</span></li>
-          <li><span><b>A weekly recap</b> of last week's focus and distraction</span></li>
-        </ul>
       </div>
     </div>
   </section>
 
-  <!-- ============ 02 GLANCE ============ -->
-  <section id="glance">
-    <div class="wrap">
-      <div class="center rv">
-        <div class="kicker">02</div>
-        <h2>Your day, beside the notch</h2>
-        <div class="prose" style="max-width:640px">
-          <p>Hover the notch for a glance, or keep it showing, and pick what sits on each side. Click it, or press <b>⌃⌥⌘N</b> anywhere, to open the full analysis.</p>
-        </div>
-      </div>
-      <div class="glances">
-        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-focus.jpg" width="780" height="260" alt="Glance with a focus session running: 24:59 left, and 2h 15m of screen time." loading="lazy"></div><figcaption><h4>Focus timer</h4><p>Start a focus from the notch and watch it count down.</p></figcaption></figure>
-        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-goal.jpg" width="780" height="260" alt="Glance: a Day Score ring on the left, a screen time goal ring on the right." loading="lazy"></div><figcaption><h4>Goals and Day Score</h4><p>A ring fills toward today's goal, beside yesterday's score.</p></figcaption></figure>
-        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-split.jpg" width="780" height="260" alt="Glance: a focus share bar at 47% on the left, 1h 7m of distraction on the right." loading="lazy"></div><figcaption><h4>Focus against distraction</h4><p>Today's split, and how much went to distraction.</p></figcaption></figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 03 CATEGORIES (live) ============ -->
-  <section id="timeline">
-    <div class="wrap">
-      <div class="head rv">
-        <div class="kicker">03</div>
-        <h2>Every app and site has a side. You pick it.</h2>
-        <div class="prose">
-          <p>Your day becomes one strip of <b>focus</b>, <b>neutral</b> and <b>distraction</b>. Try it below: move any app, site or single YouTube video to another side and watch the day re-color, just as it does in the app.</p>
-        </div>
-      </div>
-      <div class="rv">
-        <div class="live" id="live">
-          <div class="lp">
-            <div class="lp-head">
-              <div><div class="lp-big num" id="lpTotal">6h 3m</div><div class="lp-sub">Oct 8</div></div>
-              <div class="lp-legend" id="lpLegend"></div>
-            </div>
-            <h5>Timeline</h5>
-            <div class="lp-strip" id="lpStrip"></div>
-            <div class="lp-hours" id="lpHours"></div>
-            <h5>Apps and sites <button id="lpMore" aria-expanded="false"></button></h5>
-            <div class="lp-rows" id="lpRows"></div>
-          </div>
-          <div class="lp-menu" id="lpMenu" role="menu" hidden></div>
-          <div class="lp-tip" id="lpTip" hidden></div>
-        </div>
-        <div class="live-note"><span>A real day from the demo data. Changes apply to past days too.</span><button id="lpReset">Reset</button></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 04 MORE WAYS ============ -->
+  <!-- ============ 03 MORE WAYS ============ -->
   <section id="more-ways">
     <div class="wrap">
       <div class="center rv">
-        <div class="kicker">04</div>
+        <div class="kicker">03</div>
         <h2>Shape it around your day</h2>
         <div class="prose" style="max-width:600px"><p>Sort your apps, lock what pulls you away, and make the notch and the colors your own.</p></div>
       </div>
@@ -531,11 +423,11 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
     </div>
   </section>
 
-  <!-- ============ 05 INSIGHTS ============ -->
+  <!-- ============ 04 INSIGHTS ============ -->
   <section id="insights">
     <div class="wrap">
       <div class="head rv">
-        <div class="kicker">05</div>
+        <div class="kicker">04</div>
         <h2>Insights that tell you something</h2>
         <div class="prose">
           <p>Focus and distraction for the last 7, 30 or 90 days, with patterns shown only when your data backs them. Plus one <b>Day Score</b> for yesterday, judged against your own usual day.</p>
@@ -547,11 +439,11 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
     </div>
   </section>
 
-  <!-- ============ 06 GOALS ============ -->
+  <!-- ============ 05 GOALS ============ -->
   <section id="goals">
     <div class="wrap">
       <div class="head rv">
-        <div class="kicker">06</div>
+        <div class="kicker">05</div>
         <h2>Goals that can say no for you</h2>
         <div class="prose">
           <p>Any limit can warn you from the notch, then block once it's reached. The app hides and the tab goes blank, but nothing is quit and no work is lost.</p>
@@ -570,11 +462,11 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
     </div>
   </section>
 
-  <!-- ============ 07 COMPARE ============ -->
+  <!-- ============ 06 COMPARE ============ -->
   <section id="compare">
     <div class="wrap">
       <div class="head rv">
-        <div class="kicker">07</div>
+        <div class="kicker">06</div>
         <h2>NotchUsage compared with Screen&nbsp;Time</h2>
         <div class="prose">
           <p>Screen Time is good at a weekly total. NotchUsage also tells you what you were really doing, whether it was focus or distraction, and taps you on the shoulder while it's still happening.</p>
@@ -611,11 +503,11 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
     </div>
   </section>
 
-  <!-- ============ 08 ALSO INCLUDED ============ -->
+  <!-- ============ 07 ALSO INCLUDED ============ -->
   <section id="more">
     <div class="wrap">
       <div class="rv">
-        <div class="kicker">08</div>
+        <div class="kicker">07</div>
         <h2>Also included</h2>
       </div>
       <div class="grid">
@@ -638,7 +530,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
   <section id="pricing">
     <div class="wrap center">
       <div class="rv">
-        <div class="kicker">09</div>
+        <div class="kicker">08</div>
         <h2>One price, yours to keep</h2>
         <div class="prose"><p>Buy it once, updates included. Not for you? Get a refund within 14 days.</p></div>
       </div>
@@ -811,134 +703,6 @@ document.querySelectorAll('[data-seats-text]').forEach(el => {
   new IntersectionObserver(es => { inView = es[es.length - 1].intersectionRatio >= .35; update(); }, { threshold: [0, .35, .6, 1] }).observe(stage);
   document.addEventListener('visibilitychange', update);
   { const r = stage.getBoundingClientRect(); inView = r.top < innerHeight - r.height * .35 && r.bottom > r.height * .35; update(); }
-})();
-
-/* ---------------- 03: the day page, live ---------------- */
-(function live() {
-  const CAT = { f: ['Focus', '#4E9F78'], n: ['Neutral', '#5A5955'], d: ['Distraction', '#D95926'] };
-  const DEFAULTS = {
-    mail: ['Mail', 'MailIcon', 'f'], docs: ['Google Docs', 'GoogleDocsIcon', 'f'], notion: ['Notion', 'NotionIcon', 'f'],
-    instagram: ['Instagram', 'InstagramIcon', 'd'], figma: ['Figma', 'FigmaIcon', 'f'], youtube: ['YouTube', 'YouTubeIcon', 'd'],
-    messages: ['Messages', 'MessagesIcon', 'n'], claude: ['Claude', 'ClaudeIcon', 'f'], keynote: ['Keynote', 'KeynoteIcon', 'f'],
-    reddit: ['Reddit', 'RedditIcon', 'd'], linkedin: ['LinkedIn', 'LinkedInIcon', 'n'], gmail: ['Gmail', 'GmailIcon', 'f'],
-    netflix: ['Netflix', 'NetflixIcon', 'd'],
-  };
-  const PAGES = { pasta: '15-Minute Weeknight Pasta', laptops: 'The Best Laptops of 2026' };
-  // Oct 8 of the demo data, minute by minute from midnight: [start, end, app or site, page].
-  const BLOCKS = [[549,563,'mail'],[566,615,'docs'],[619,644,'notion'],[645,651,'instagram'],[651,698,'figma'],[737,756,'youtube','pasta'],
-    [794,803,'messages'],[818,842,'claude'],[842,892,'keynote'],[892,904,'reddit'],[908,940,'docs'],[940,947,'linkedin'],[949,963,'gmail'],
-    [1202,1220,'youtube','laptops'],[1225,1255,'netflix'],[1264,1271,'instagram']];
-  const RANGE = [8 * 60, 24 * 60];
-  let cats = {}, pageCats = {}, lit = null, showAll = false, ytOpen = false, menuFor = null;
-
-  const $ = id => document.getElementById(id);
-  const live = $('live'), strip = $('lpStrip'), rowsEl = $('lpRows'), menu = $('lpMenu'), tip = $('lpTip');
-  const fmt = m => { const h = Math.floor(m / 60), r = m % 60; return h ? (r ? `${h}h ${r}m` : `${h}h`) : `${r}m`; };
-  const clock = m => { let h = Math.floor(m / 60) % 24; const ap = h < 12 ? 'AM' : 'PM'; h = h % 12 || 12; return `${h}:${String(m % 60).padStart(2, '0')} ${ap}`; };
-  const hour = m => { let h = Math.floor(m / 60) % 24; const ap = h < 12 ? 'AM' : 'PM'; h = h % 12 || 12; return `${h} ${ap}`; };
-  const catOf = k => cats[k] || DEFAULTS[k][2];
-  const blockCat = b => (b[3] && pageCats[b[3]]) || catOf(b[2]);
-  const icon = k => `<img src="assets/${DEFAULTS[k][1]}.png" alt="">`;
-
-  function totals() {
-    const t = { f: 0, n: 0, d: 0 }, by = {}, pages = {};
-    for (const b of BLOCKS) {
-      const m = b[1] - b[0]; t[blockCat(b)] += m; by[b[2]] = (by[b[2]] || 0) + m;
-      if (b[3]) pages[b[3]] = (pages[b[3]] || 0) + m;
-    }
-    return { t, by, pages };
-  }
-  function legend(t) {
-    $('lpLegend').innerHTML = ['f', 'n', 'd'].map(c => `<span><i class="sw" style="background:${CAT[c][1]}"></i>${CAT[c][0]}</span><b id="lg-${c}">${fmt(t[c])}</b>`).join('');
-  }
-  function drawStrip() {
-    const span = RANGE[1] - RANGE[0];
-    strip.innerHTML = BLOCKS.map((b, i) => {
-      const dim = lit && b[2] !== lit;
-      return `<button class="lp-blk${dim ? ' dim' : ''}" data-i="${i}" aria-label="${DEFAULTS[b[2]][0]}, ${clock(b[0])} to ${clock(b[1])}"
-        style="left:${(b[0] - RANGE[0]) / span * 100}%;width:${(b[1] - b[0]) / span * 100}%;background:${CAT[blockCat(b)][1]}"></button>`;
-    }).join('');
-    const hrs = []; for (let m = RANGE[0]; m <= RANGE[1]; m += 240) hrs.push(`<span style="left:${(m - RANGE[0]) / span * 100}%">${hour(m)}</span>`);
-    $('lpHours').innerHTML = hrs.join('');
-  }
-  const pill = (c, key, label) => `<button class="cat-btn" data-key="${key}" aria-haspopup="menu" aria-expanded="${menuFor === key}" aria-label="${label}: ${CAT[c][0]}. Change"><i class="sw" style="background:${CAT[c][1]}"></i>${CAT[c][0]}</button>`;
-  function drawRows() {
-    const { by, pages } = totals();
-    const list = Object.entries(by).sort((a, b) => b[1] - a[1]);
-    const max = list[0][1], shown = showAll ? list : list.slice(0, 6);
-    $('lpMore').textContent = showAll ? 'Show less' : `Show all ${list.length}`;
-    $('lpMore').setAttribute('aria-expanded', showAll);
-    rowsEl.innerHTML = shown.map(([k, m]) => {
-      const c = catOf(k);
-      let h = `<div class="lp-row${lit === k ? ' lit' : ''}" data-row="${k}" style="--rc:${CAT[c][1]}">${icon(k)}
-        <span class="nm">${DEFAULTS[k][0]}${k === 'youtube' ? `<button data-yt aria-expanded="${ytOpen}" aria-label="Show YouTube's videos">›</button>` : ''}</span>
-        <span class="lp-bar"><i style="width:${m / max * 100}%"></i></span><span class="t">${fmt(m)}</span>${pill(c, k, DEFAULTS[k][0])}</div>`;
-      if (k === 'youtube' && ytOpen) h += Object.entries(pages).map(([p, pm]) => {
-        const pc = pageCats[p] || c;
-        return `<div class="lp-row page" data-row="youtube" style="--rc:${CAT[pc][1]}"><span></span><span class="nm">${PAGES[p]}</span><span class="lp-bar"><i style="width:${pm / max * 100}%"></i></span><span class="t">${fmt(pm)}</span>${pill(pc, 'page:' + p, PAGES[p])}</div>`;
-      }).join('');
-      return h;
-    }).join('');
-  }
-  function render(changed) {
-    const { t } = totals();
-    legend(t); drawStrip(); drawRows();
-    if (changed) for (const c of changed) $('lg-' + c)?.classList.add('bump');
-  }
-  function openMenu(key, anchor) {
-    menuFor = key;
-    const isPage = key.startsWith('page:'), name = isPage ? PAGES[key.slice(5)] : DEFAULTS[key][0];
-    const cur = isPage ? (pageCats[key.slice(5)] || catOf('youtube')) : catOf(key);
-    menu.innerHTML = `<div class="ttl">${name}</div>` + ['f', 'n', 'd'].map(c =>
-      `<button role="menuitemradio" aria-checked="${c === cur}" data-set="${c}"><span class="ck">${c === cur ? '✓' : ''}</span><i class="sw" style="background:${CAT[c][1]}"></i>${CAT[c][0]}</button>`).join('')
-      + (isPage && pageCats[key.slice(5)] ? `<hr><button role="menuitem" data-set=""><span class="ck"></span><span></span>Same as YouTube</button>` : '');
-    menu.hidden = false;
-    const lr = live.getBoundingClientRect(), ar = anchor.getBoundingClientRect();
-    const left = Math.min(ar.left - lr.left, lr.width - menu.offsetWidth - 8);
-    let top = ar.bottom - lr.top + 6;
-    if (top + menu.offsetHeight > lr.height - 8) top = ar.top - lr.top - menu.offsetHeight - 6;
-    menu.style.left = Math.max(8, left) + 'px'; menu.style.top = top + 'px';
-    drawRows();
-    menu.querySelector('[aria-checked="true"]')?.focus();
-  }
-  function closeMenu() { if (menu.hidden) return; menu.hidden = true; menuFor = null; drawRows(); }
-  function setCat(key, c) {
-    const before = totals().t;
-    if (key.startsWith('page:')) { const p = key.slice(5); if (c) pageCats[p] = c; else delete pageCats[p]; }
-    else { cats[key] = c; if (c === DEFAULTS[key][2]) delete cats[key]; }
-    const after = totals().t;
-    menu.hidden = true; menuFor = null;
-    render(['f', 'n', 'd'].filter(x => before[x] !== after[x]));
-  }
-
-  live.addEventListener('click', e => {
-    const set = e.target.closest('[data-set]');
-    if (set) return setCat(menuFor, set.dataset.set);
-    const btn = e.target.closest('.cat-btn');
-    if (btn) { e.stopPropagation(); return menuFor === btn.dataset.key ? closeMenu() : openMenu(btn.dataset.key, btn); }
-    const blk = e.target.closest('.lp-blk');
-    if (blk) { const b = BLOCKS[+blk.dataset.i]; return openMenu(b[3] ? 'page:' + b[3] : b[2], blk); }
-    if (e.target.closest('[data-yt]')) { ytOpen = !ytOpen; return drawRows(); }
-    if (e.target.closest('#lpMore')) { showAll = !showAll; return drawRows(); }
-    if (!e.target.closest('#lpMenu')) closeMenu();
-  });
-  document.addEventListener('click', e => { if (!live.contains(e.target)) closeMenu(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-  // Hovering a row lights its blocks; hovering a block lights its row and names it.
-  live.addEventListener('mouseover', e => {
-    const row = e.target.closest('[data-row]'), blk = e.target.closest('.lp-blk');
-    const k = row ? row.dataset.row : blk ? BLOCKS[+blk.dataset.i][2] : null;
-    if (blk) {
-      const b = BLOCKS[+blk.dataset.i], lr = live.getBoundingClientRect(), r = blk.getBoundingClientRect();
-      tip.innerHTML = `${icon(b[2])}<span>${b[3] ? PAGES[b[3]] : DEFAULTS[b[2]][0]} · ${clock(b[0])} – ${clock(b[1])}</span>`;
-      tip.style.left = r.left + r.width / 2 - lr.left + 'px'; tip.style.top = r.top - lr.top + 'px'; tip.hidden = false;
-    } else tip.hidden = true;
-    if (k !== lit) { lit = k; drawStrip(); rowsEl.querySelectorAll('.lp-row').forEach(r => r.classList.toggle('lit', r.dataset.row === lit)); }
-  });
-  live.addEventListener('mouseleave', () => { tip.hidden = true; if (lit) { lit = null; drawStrip(); drawRows(); } });
-  live.addEventListener('animationend', e => e.target.classList.remove('bump'));
-  $('lpReset').addEventListener('click', () => { cats = {}; pageCats = {}; render(); });
-  render();
 })();
 
 /* ---------------- reveal ---------------- */
