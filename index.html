@@ -160,6 +160,9 @@ h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -.0
 .bcard { margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 14px 14px 22px; }
 .bimg { border-radius: 12px; overflow: hidden; aspect-ratio: 1000 / 616; background: #2a2b22; }
 .bimg img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.bimg.short { aspect-ratio: 1000 / 300; }
+.bimg.fit { aspect-ratio: auto; background: #000; }
+.bimg.fit img { height: auto; }
 .bcard figcaption { padding: 18px 8px 0; }
 .bic { width: 16px; height: 16px; color: var(--c-focus); }
 .bcard h4 { margin: 10px 0 6px; font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
@@ -198,17 +201,16 @@ table.cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
 .feat h4 .ic svg { width: 16px; height: 16px; color: var(--text); }
 .feat p { margin: 0; color: var(--muted); font-size: 14.5px; }
 .icon-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-.fshot { aspect-ratio: 2 / 1; margin: -8px -8px 18px; border-radius: 10px; background: #000; overflow: hidden; display: grid; place-items: center; }
-.fshot img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.fshot { position: relative; aspect-ratio: 2 / 1; margin: -8px -8px 18px; border-radius: 10px; background: #000; overflow: hidden; }
+.fshot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .icon-row img { width: 24px; height: 24px; border-radius: 6px; }
 
 /* pricing */
 .price-card { max-width: 560px; margin: 40px auto 0; padding: 34px; text-align: left; border-radius: 24px; background: var(--surface); border: 1px solid var(--border); position: relative; overflow: hidden; }
 .price-card::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: linear-gradient(90deg, var(--c-focus), var(--c-dist)); }
-.price-row { display: flex; align-items: baseline; gap: 14px; margin: 18px 0 4px; }
+.price-row { display: flex; align-items: baseline; gap: 14px; margin: 18px 0 24px; }
 .price { font-size: 64px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
 .was { font-size: 22px; color: var(--faint); text-decoration: line-through; }
-.price-note { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
 .ladder { max-width: 920px; margin: 56px auto 0; text-align: left; }
 .ladder .rail { position: relative; height: 28px; margin: 0 14px; }
 .ladder .rail::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2px dashed var(--border-2); }
@@ -440,8 +442,8 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
         <div class="shot sm rv"><img src="assets/shots/goal-warning.jpg" width="1003" height="300" alt="A goal warning under the notch: Distraction today, 1h 41m, 19 minutes until it blocks." loading="lazy"></div>
       </div>
       <div class="bento b2">
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-focus-lock.jpg" width="1000" height="616" alt="A notch message: YouTube is paused until your Focus session ends." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-timer"/></svg><h4>Focus lock</h4><p>Distractions stay paused while a focus runs, and open again the moment a break starts.</p></figcaption></figure>
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-morning-lock.jpg" width="1000" height="616" alt="A notch message: YouTube is paused until 9:42 AM, the start of your day." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-moon"/></svg><h4>Morning lock</h4><p>Keep the first hour of your day clear of distractions, from whenever your day begins.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg short"><img src="assets/shots/card-focus-lock.jpg" width="1000" height="300" alt="A notch message: YouTube is paused until your Focus session ends." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-timer"/></svg><h4>Focus lock</h4><p>Distractions stay paused while a focus runs, and open again the moment a break starts.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg short"><img src="assets/shots/card-morning-lock.jpg" width="1000" height="300" alt="A notch message: YouTube is paused until 9:42 AM, the start of your day." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-moon"/></svg><h4>Morning lock</h4><p>Keep the first hour of your day clear of distractions, from whenever your day begins.</p></figcaption></figure>
       </div>
     </div>
   </section>
@@ -454,10 +456,12 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
         <h2>Settings: make it yours</h2>
         <div class="prose"><p>Sort your apps, choose what the notch shows, and pick the colors every chart uses.</p></div>
       </div>
-      <div class="bento b3">
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-buckets.jpg" width="1000" height="616" alt="Apps and sites in three buckets, Focus, Neutral and Distraction, with locks and limits below." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-hand"/></svg><h4>Sort apps into buckets</h4><p>Focus, Neutral and Distraction side by side. Drag an app across to change its side, or click it to set a limit.</p></figcaption></figure>
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-notch.jpg" width="1000" height="616" alt="Notch customization: the notch bar as it looks now, then a tile for every choice on the right side: Screen Time, goal ring, current app, focus, distraction, Day Score, pickups and more." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-display"/></svg><h4>Make the notch yours</h4><p>Every choice for each side of the notch, drawn as it would look, beside a live preview.</p></figcaption></figure>
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-colors.jpg" width="1000" height="616" alt="The Colors settings page: a preview strip, the Vivid, Calm, Ocean, Berry and Custom themes, and the date formats." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-palette"/></svg><h4>Your colors</h4><p>Pick Vivid, Calm, Ocean or Berry, or set your own. Every chart re-colors at once.</p></figcaption></figure>
+      <div class="bento b2">
+        <figure class="bcard rv"><div class="bimg fit"><img src="assets/shots/card-notch.jpg" width="1024" height="736" alt="Notch customization: the notch bar as it looks now, then a tile for every choice on the right side: Screen Time, goal ring, current app, focus, distraction, Day Score, pickups and more." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-display"/></svg><h4>Make the notch yours</h4><p>Every choice for each side of the notch, drawn as it would look, beside a live preview.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg fit"><img src="assets/shots/card-colors.jpg" width="1024" height="736" alt="The Colors settings page: a preview strip, the Vivid, Calm, Ocean, Berry and Custom themes, and the date formats." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-palette"/></svg><h4>Your colors</h4><p>Pick Vivid, Calm, Ocean or Berry, or set your own. Every chart re-colors at once.</p></figcaption></figure>
+      </div>
+      <div class="bento">
+        <figure class="bcard rv"><div class="bimg fit"><img src="assets/shots/card-buckets.jpg" width="1400" height="836" alt="Apps and sites in three buckets, Focus, Neutral and Distraction, with locks and limits below." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-hand"/></svg><h4>Sort apps into buckets</h4><p>Focus, Neutral and Distraction side by side. Drag an app across to change its side, or click it to set a limit.</p></figcaption></figure>
       </div>
     </div>
   </section>
@@ -519,9 +523,9 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
           <h4><span class="ic"><svg><use href="#i-tag"/></svg></span>Every site, by name</h4><p>Every site is tracked and shown by its brand name and real icon. Private windows count as time only.</p>
           <div class="icon-row"><img src="assets/YouTubeIcon.png" alt="YouTube"><img src="assets/NetflixIcon.png" alt="Netflix"><img src="assets/InstagramIcon.png" alt="Instagram"><img src="assets/RedditIcon.png" alt="Reddit"><img src="assets/GmailIcon.png" alt="Gmail"><img src="assets/GoogleDocsIcon.png" alt="Google Docs"><img src="assets/NotionIcon.png" alt="Notion"><img src="assets/FigmaIcon.png" alt="Figma"></div>
         </div>
-        <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-eye"/></svg></span>Hidden from screen shares</h4><p>Nudges and the glance never show up in screen sharing, calls or recordings.</p></div>
-        <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-display"/></svg></span>No notch? No problem</h4><p>On an external display or an older Mac, panels drop from the top center of the screen you're using.</p></div>
-        <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-lock"/></svg></span>Stays on your Mac</h4><p>Everything is stored on your Mac. Nothing is uploaded, and there's no account to make.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-share.jpg" alt="The glance beside the notch on your screen, and the same spot in a screen share with nothing there." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-eye"/></svg></span>Hidden from screen shares</h4><p>Nudges and the glance never show up in screen sharing, calls or recordings.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-nonotch.jpg" alt="On a screen without a notch, a nudge drops from the top center: 1 hour of YouTube today." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-display"/></svg></span>No notch? No problem</h4><p>On an external display or an older Mac, panels drop from the top center of the screen you're using.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-local.jpg" alt="The NotchUsage folder in Application Support on your Mac, with tracking.sqlite and the site icons." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-lock"/></svg></span>Stays on your Mac</h4><p>Everything is stored on your Mac. Nothing is uploaded, and there's no account to make.</p></div>
       </div>
     </div>
   </section>
@@ -538,7 +542,6 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
       <div class="price-card rv">
         <div style="font-weight:600">NotchUsage for Mac</div>
         <div class="price-row"><span class="price num" data-price>$1</span><span class="was num">$9.99</span></div>
-        <div class="price-note">$1 for the first 10 users, then $4.99 for the next 100 users, then $9.99.</div>
         <ul class="checks">
           <li>Watching time, apart from open time</li>
           <li>Focus, neutral and distraction for every app, site and page</li>
