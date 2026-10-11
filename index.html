@@ -138,16 +138,12 @@ h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -.0
 .prose { color: var(--muted); font-size: 18px; max-width: 560px; }
 .prose p { margin: 0 0 14px; }
 .prose b { color: var(--text); font-weight: 600; }
-.split { display: grid; grid-template-columns: 1fr 1.25fr; gap: 64px; align-items: center; }
-.split.rev { grid-template-columns: 1.25fr 1fr; }
-.split.rev > :first-child { order: 2; }
 .head { max-width: 720px; }
 .head .prose { max-width: 680px; }
 .wide { margin-top: 40px; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
 
 /* 01 nudges */
-.stack { display: flex; flex-direction: column; gap: 14px; }
 
 /* 02 glance */
 .glances { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 48px; }
@@ -201,7 +197,9 @@ table.cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
 .feat h4 .ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--surface-3); flex: none; }
 .feat h4 .ic svg { width: 16px; height: 16px; color: var(--text); }
 .feat p { margin: 0; color: var(--muted); font-size: 14.5px; }
-.icon-row { display: flex; gap: 6px; margin-top: 14px; }
+.icon-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.fshot { aspect-ratio: 2 / 1; margin: -8px -8px 18px; border-radius: 10px; background: #000; overflow: hidden; display: grid; place-items: center; }
+.fshot img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .icon-row img { width: 24px; height: 24px; border-radius: 6px; }
 
 /* pricing */
@@ -264,8 +262,6 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 
 @media (max-width: 960px) {
   .nav-links { display: none; }
-  .split, .split.rev { grid-template-columns: 1fr; gap: 36px; }
-  .split.rev > :first-child { order: 0; }
   .grid, .locks, .bento.b3 { grid-template-columns: 1fr 1fr; }
   .warn { grid-template-columns: 1fr; gap: 24px; }
 }
@@ -341,11 +337,11 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 
     <div class="demo rv" id="demo">
       <div class="shot stage" id="stage" aria-live="polite">
-        <img class="on" data-frame="day" src="assets/shots/day.jpg" width="1623" height="1000" alt="The NotchUsage panel grown out of the notch, showing a day: 6h 3m of screen time, a timeline strip colored focus and distraction, and the top apps and sites.">
-        <img data-frame="week" src="assets/shots/week.jpg" width="1623" height="1000" alt="The week view: 4h 55m a day, seven day lanes colored by focus and distraction, and parts of the day.">
+        <img class="on" data-frame="day" src="assets/shots/day.jpg" width="1623" height="1000" alt="The NotchUsage panel grown out of the notch, showing a day: 6h 9m of screen time, a timeline strip colored focus and distraction, and the top apps and sites.">
+        <img data-frame="week" src="assets/shots/week.jpg" width="1623" height="1000" alt="The week view: 5h 22m a day, seven day lanes colored by focus and distraction, and parts of the day.">
         <img data-frame="month" src="assets/shots/month.jpg" width="1623" height="1000" alt="The month view: a grid with a square per day since tracking began.">
-        <img data-frame="insights" src="assets/shots/insights.jpg" width="1623" height="1000" alt="The Insights page: focus and distraction a day, a Day Score of 72, and five patterns.">
-        <img data-frame="goals" src="assets/shots/goals.jpg" width="1623" height="1000" alt="The Goals page: 2h 15m today against a 7h screen time goal, a week of stacked bars, and goal tiles.">
+        <img data-frame="insights" src="assets/shots/insights.jpg" width="1623" height="1000" alt="The Insights page: focus and distraction a day, a Day Score of 74, and five patterns.">
+        <img data-frame="goals" src="assets/shots/goals.jpg" width="1623" height="1000" alt="The Goals page: 1h 27m today against a 7h screen time goal, a week of stacked bars, and goal tiles.">
         <img data-frame="addgoal" src="assets/shots/addgoal.jpg" width="1623" height="1000" alt="Adding a goal: apps and sites in three buckets, Focus, Neutral and Distraction, then locks and limits.">
         <img data-frame="editgoal" src="assets/shots/editgoal.jpg" width="1623" height="1000" alt="A YouTube goal of 1 hour a day, warning at 45 minutes and blocking at 1 hour, beside the last 7 days.">
         <svg class="cursor gone" id="cursor" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 2l15 9.2-6.7 1.3 3.9 6.9-2.6 1.4-3.9-6.9L3 18.6z" fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round"/></svg>
@@ -376,75 +372,59 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
         </div>
       </div>
       <div class="glances">
-        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-focus.jpg" width="780" height="260" alt="Glance with a focus session running: 24:59 left, and a ring at 2h 15m toward today's screen time goal." loading="lazy"></div><figcaption><h4>Focus timer</h4><p>Start a focus from the notch and watch it count down, beside a ring that fills toward today's screen time goal.</p></figcaption></figure>
-        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-current.jpg" width="780" height="260" alt="Glance: YouTube at 42m today on the left, 1h 7m of distraction on the right." loading="lazy"></div><figcaption><h4>Current app today</h4><p>The app or site you're on right now, and how long it's had you today.</p></figcaption></figure>
+        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-focus.jpg" width="780" height="260" alt="Glance with a focus session running: 24:58 left, and a ring at 1h 27m toward today's screen time goal." loading="lazy"></div><figcaption><h4>Focus timer</h4><p>Start a focus from the notch and watch it count down, beside a ring that fills toward today's screen time goal.</p></figcaption></figure>
+        <figure class="rv"><div class="shot sm"><img src="assets/shots/glance-current.jpg" width="780" height="260" alt="Glance: Messages at 15m today on the left, 1h 12m of distraction on the right." loading="lazy"></div><figcaption><h4>Current app today</h4><p>The app or site you're on right now, and how long it's had you today.</p></figcaption></figure>
+      </div>
+      <div class="warn" id="nudge">
+        <div class="rv">
+          <h3>A nudge while it's still happening</h3>
+          <div class="prose"><p>At every full hour on a site, a small panel grows out of the notch and folds back in after 7 seconds. It counts only what you actually watch, so a paused video or a background tab never adds up.</p></div>
+        </div>
+        <div class="shot sm rv"><img src="assets/shots/nudge-youtube.jpg" width="763" height="181" alt="A nudge under the notch: 1 hour of YouTube today." loading="lazy"></div>
       </div>
     </div>
   </section>
 
-  <!-- ============ 02 NUDGE ============ -->
-  <section id="nudge">
-    <div class="wrap split">
-      <div class="rv">
+  <!-- ============ 02 TIMELINE ============ -->
+  <section id="timeline">
+    <div class="wrap">
+      <div class="head rv">
         <div class="kicker">02</div>
-        <h2>A nudge from the notch, while it's still happening</h2>
+        <h2>Timeline: see where the day went</h2>
         <div class="prose">
-          <p>At every full hour on a site, a small panel grows out of the notch and folds back in after 7 seconds. It counts only what you actually watch, so a paused video or a background tab never adds up.</p>
+          <p>Every minute is <b>focus</b>, <b>neutral</b> or <b>distraction</b>. See the day as one strip, the week a lane per day, and the month a square for every day since you started.</p>
         </div>
       </div>
-      <div class="stack rv">
-        <div class="shot sm"><img src="assets/shots/nudge-youtube.jpg" width="763" height="181" alt="A nudge under the notch: 1 hour of YouTube today." loading="lazy"></div>
-        <div class="shot sm"><img src="assets/shots/nudge-netflix.jpg" width="763" height="181" alt="A nudge under the notch: 2 hours of Netflix today." loading="lazy"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 03 MORE WAYS ============ -->
-  <section id="more-ways">
-    <div class="wrap">
-      <div class="center rv">
-        <div class="kicker">03</div>
-        <h2>Shape it around your day</h2>
-        <div class="prose" style="max-width:600px"><p>Sort your apps, lock what pulls you away, and make the notch and the colors your own.</p></div>
-      </div>
-      <div class="bento b2">
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-categories.jpg" width="1000" height="616" alt="The day colored by category: Work 2h 36m, Entertainment 1h 7m, Create 47m, Talk 37m, Social 32m, Learn 24m." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-tag"/></svg><h4>Time by kind</h4><p>Color the day by Work, Create, Learn, Talk, Entertainment and Social to see what kind of day it was.</p></figcaption></figure>
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-buckets.jpg" width="1000" height="616" alt="Apps and sites in three buckets, Focus, Neutral and Distraction, with locks and limits below." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-hand"/></svg><h4>Sort apps into buckets</h4><p>Focus, Neutral and Distraction side by side. Drag an app across to change its side, or click it to set a limit.</p></figcaption></figure>
-      </div>
       <div class="bento b3">
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-focus-lock.jpg" width="1000" height="616" alt="A notch message: YouTube is paused until your Focus session ends." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-timer"/></svg><h4>Focus lock</h4><p>Distractions stay paused while a focus runs, and open again the moment a break starts.</p></figcaption></figure>
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-morning-lock.jpg" width="1000" height="616" alt="A notch message: YouTube is paused until 9:42 AM, the start of your day." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-moon"/></svg><h4>Morning lock</h4><p>Keep the first hour of your day clear of distractions, from whenever your day begins.</p></figcaption></figure>
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-colors.jpg" width="1000" height="616" alt="The Colors settings page: a preview strip, the Vivid, Calm, Ocean, Berry and Custom themes, and the date formats." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-palette"/></svg><h4>Your colors</h4><p>Pick Vivid, Calm, Ocean or Berry, or set your own. Every chart re-colors at once.</p></figcaption></figure>
-      </div>
-      <div class="bento b2">
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-notch.jpg" width="1000" height="616" alt="Notch customization settings: a live preview of the notch bar, its display style, and how the glance opens." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-display"/></svg><h4>Make the notch yours</h4><p>Choose what each side of the notch shows and how the glance opens, with a live preview.</p></figcaption></figure>
-        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-week.jpg" width="1000" height="616" alt="The week colored by category, with a lane per day and mornings, afternoons and evenings below." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-cal"/></svg><h4>Your week, hour by hour</h4><p>A lane per day and the parts of the day, so a habit is hard to miss.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-day.jpg" width="1000" height="616" alt="A day: 6h 9m, its timeline strip in focus green and distraction orange, with white dots where nudges came, and the top apps and sites." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-display"/></svg><h4>Your day as one strip</h4><p>Focus in green, distraction in orange, and a white dot wherever a nudge came.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-week.jpg" width="1000" height="616" alt="The week: a lane per day in focus and distraction, then morning, afternoon, evening and night with their top apps." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-cal"/></svg><h4>Your week, hour by hour</h4><p>A lane per day, and what mornings, afternoons, evenings and nights went to.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-month.jpg" width="1000" height="616" alt="The month: a square for every day since tracking began, colored from focus to distraction." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-tag"/></svg><h4>Every day since you started</h4><p>A square per day, so good weeks and bad ones stand out.</p></figcaption></figure>
       </div>
     </div>
   </section>
 
-  <!-- ============ 04 INSIGHTS ============ -->
+  <!-- ============ 03 INSIGHTS ============ -->
   <section id="insights">
     <div class="wrap">
       <div class="head rv">
-        <div class="kicker">04</div>
-        <h2>Insights that tell you something</h2>
+        <div class="kicker">03</div>
+        <h2>Insights: what your days have in common</h2>
         <div class="prose">
           <p>Focus and distraction for the last 7, 30 or 90 days, with patterns shown only when your data backs them. Plus one <b>Day Score</b> for yesterday, judged against your own usual day.</p>
         </div>
       </div>
       <div class="wide rv">
-        <div class="shot"><img src="assets/shots/insights.jpg" width="1623" height="1000" alt="The Insights page: 3h 34m focus and 1h 26m distraction a day, a Day Score of 72, and five patterns." loading="lazy"></div>
+        <div class="shot"><img src="assets/shots/insights.jpg" width="1623" height="1000" alt="The Insights page: 3h 1m focus and 2h 8m distraction a day, a Day Score of 74, and five patterns." loading="lazy"></div>
       </div>
     </div>
   </section>
 
-  <!-- ============ 05 GOALS ============ -->
+  <!-- ============ 04 GOALS ============ -->
   <section id="goals">
     <div class="wrap">
       <div class="head rv">
-        <div class="kicker">05</div>
-        <h2>Goals that can say no for you</h2>
+        <div class="kicker">04</div>
+        <h2>Goals: limits that can say no for you</h2>
         <div class="prose">
           <p>Any limit can warn you from the notch, then block once it's reached. The app hides and the tab goes blank, but nothing is quit and no work is lost.</p>
         </div>
@@ -458,6 +438,26 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
           <div class="prose"><p>The notch tells you how close you are, and how long until it blocks.</p></div>
         </div>
         <div class="shot sm rv"><img src="assets/shots/goal-warning.jpg" width="1003" height="300" alt="A goal warning under the notch: Distraction today, 1h 41m, 19 minutes until it blocks." loading="lazy"></div>
+      </div>
+      <div class="bento b2">
+        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-focus-lock.jpg" width="1000" height="616" alt="A notch message: YouTube is paused until your Focus session ends." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-timer"/></svg><h4>Focus lock</h4><p>Distractions stay paused while a focus runs, and open again the moment a break starts.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-morning-lock.jpg" width="1000" height="616" alt="A notch message: YouTube is paused until 9:42 AM, the start of your day." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-moon"/></svg><h4>Morning lock</h4><p>Keep the first hour of your day clear of distractions, from whenever your day begins.</p></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 SETTINGS ============ -->
+  <section id="settings">
+    <div class="wrap">
+      <div class="head rv">
+        <div class="kicker">05</div>
+        <h2>Settings: make it yours</h2>
+        <div class="prose"><p>Sort your apps, choose what the notch shows, and pick the colors every chart uses.</p></div>
+      </div>
+      <div class="bento b3">
+        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-buckets.jpg" width="1000" height="616" alt="Apps and sites in three buckets, Focus, Neutral and Distraction, with locks and limits below." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-hand"/></svg><h4>Sort apps into buckets</h4><p>Focus, Neutral and Distraction side by side. Drag an app across to change its side, or click it to set a limit.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-notch.jpg" width="1000" height="616" alt="Notch customization: the notch bar as it looks now, then a tile for every choice on the right side: Screen Time, goal ring, current app, focus, distraction, Day Score, pickups and more." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-display"/></svg><h4>Make the notch yours</h4><p>Every choice for each side of the notch, drawn as it would look, beside a live preview.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg"><img src="assets/shots/card-colors.jpg" width="1000" height="616" alt="The Colors settings page: a preview strip, the Vivid, Calm, Ocean, Berry and Custom themes, and the date formats." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-palette"/></svg><h4>Your colors</h4><p>Pick Vivid, Calm, Ocean or Berry, or set your own. Every chart re-colors at once.</p></figcaption></figure>
       </div>
     </div>
   </section>
@@ -511,16 +511,16 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
         <h2>Also included</h2>
       </div>
       <div class="grid">
-        <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-timer"/></svg></span>Focus timer</h4><p>25 minutes on, 5 off, a longer break every fourth round, all adjustable. The notch says what's next.</p></div>
-        <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-hand"/></svg></span>Pickups</h4><p>Each unlock of your Mac counts, shown under the day's total, or as a daily average for a week or month.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-focus.jpg" alt="Focus timer settings: 25 minutes of focus, 5 minute breaks, a 15 minute break every 4 focuses." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-timer"/></svg></span>Focus timer</h4><p>25 minutes on, 5 off, a longer break every fourth round, all adjustable. The notch says what's next.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-pickups.jpg" alt="The Pickups tile for the notch: 3 pickups today." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-hand"/></svg></span>Pickups</h4><p>Each unlock of your Mac counts, shown under the day's total, or as a daily average for a week or month.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-quiet.jpg" alt="Notification settings: nudges for distraction, YouTube, Twitch and X, the weekly recap, and quiet hours from 10 PM to 7 AM." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-moon"/></svg></span>Quiet hours</h4><p>Pick the hours nudges rest, and turn them off site by site.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-parts.jpg" alt="Morning, afternoon, evening and night for a week, each with its top apps and sites." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-cal"/></svg></span>Parts of the day</h4><p>Week and month split into morning, afternoon, evening and night, each with its top apps and sites.</p></div>
         <div class="card feat rv">
           <h4><span class="ic"><svg><use href="#i-tag"/></svg></span>Every site, by name</h4><p>Every site is tracked and shown by its brand name and real icon. Private windows count as time only.</p>
           <div class="icon-row"><img src="assets/YouTubeIcon.png" alt="YouTube"><img src="assets/NetflixIcon.png" alt="Netflix"><img src="assets/InstagramIcon.png" alt="Instagram"><img src="assets/RedditIcon.png" alt="Reddit"><img src="assets/GmailIcon.png" alt="Gmail"><img src="assets/GoogleDocsIcon.png" alt="Google Docs"><img src="assets/NotionIcon.png" alt="Notion"><img src="assets/FigmaIcon.png" alt="Figma"></div>
         </div>
-                <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-eye"/></svg></span>Hidden from screen shares</h4><p>Nudges and the glance never show up in screen sharing, calls or recordings.</p></div>
+        <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-eye"/></svg></span>Hidden from screen shares</h4><p>Nudges and the glance never show up in screen sharing, calls or recordings.</p></div>
         <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-display"/></svg></span>No notch? No problem</h4><p>On an external display or an older Mac, panels drop from the top center of the screen you're using.</p></div>
-        <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-moon"/></svg></span>Quiet hours</h4><p>Pick the hours nudges rest, and turn them off site by site.</p></div>
-        <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-cal"/></svg></span>Parts of the day</h4><p>Week and month split into morning, afternoon, evening and night, each with its top apps and sites.</p></div>
         <div class="card feat rv"><h4><span class="ic"><svg><use href="#i-lock"/></svg></span>Stays on your Mac</h4><p>Everything is stored on your Mac. Nothing is uploaded, and there's no account to make.</p></div>
       </div>
     </div>
