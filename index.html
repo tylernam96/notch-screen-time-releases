@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NotchUsage: The Screen Time Alternative for Mac</title>
-<meta name="description" content="NotchUsage knows when you're actually watching, not just when a tab is open. Focus, neutral and distraction for every app and site, a quiet nudge from the notch every hour, goals that can lock distractions, and a calm look back at your day.">
+<title>NotchTime: The Screen Time Alternative for Mac</title>
+<meta name="description" content="NotchTime knows when you're actually watching, not just when a tab is open. Focus, neutral and distraction for every app and site, a quiet nudge from the notch every hour, goals that can lock distractions, and a calm look back at your day.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%2318181b'/%3E%3Cpath d='M20 0h24v6a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8z' fill='%23000'/%3E%3Crect x='12' y='40' width='18' height='8' rx='3' fill='%23199E70'/%3E%3Crect x='32' y='40' width='8' height='8' rx='3' fill='%2348484d'/%3E%3Crect x='42' y='40' width='10' height='8' rx='3' fill='%23D95926'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -200,10 +200,10 @@ table.cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
 .feat h4 .ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--surface-3); flex: none; }
 .feat h4 .ic svg { width: 16px; height: 16px; color: var(--text); }
 .feat p { margin: 0; color: var(--muted); font-size: 14.5px; }
-.icon-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.icon-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; }
 .fshot { position: relative; aspect-ratio: 2 / 1; margin: -8px -8px 18px; border-radius: 10px; background: #000; overflow: hidden; }
 .fshot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-.icon-row img { width: 24px; height: 24px; border-radius: 6px; }
+.icon-row img { width: 22px; height: 22px; border-radius: 6px; }
 
 /* pricing */
 .price-card { max-width: 560px; margin: 40px auto 0; padding: 34px; text-align: left; border-radius: 24px; background: var(--surface); border: 1px solid var(--border); position: relative; overflow: hidden; }
@@ -232,7 +232,8 @@ table.cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
 .checks li { display: flex; gap: 12px; }
 .checks li::before { content: "✓"; color: var(--c-focus); font-weight: 700; }
 .price-card .btn { width: 100%; justify-content: center; height: 50px; font-size: 16px; }
-.fine { font-size: 13px; color: var(--muted); text-align: center; margin-top: 14px; }
+.fine { font-size: 13px; color: var(--muted); text-align: center; margin-top: 14px; line-height: 1.7; }
+.fine a { color: var(--text); font-weight: 600; }
 
 /* faq */
 .faq { max-width: 760px; margin: 30px auto 0; }
@@ -308,16 +309,17 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="#top"><svg><use href="#logo"/></svg>NotchUsage</a>
+    <a class="brand" href="#top"><svg><use href="#logo"/></svg>NotchTime</a>
     <nav class="nav-links">
       <a href="#glance">Features</a>
       <a href="#compare">Compare</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
+      <a href="guide.html">Guide</a>
     </nav>
     <div class="nav-right">
       <!-- TODO: link to the Dodo Payments checkout -->
-      <a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg><span class="lbl-long">Get NotchUsage ·</span> <span data-price>$1</span></a>
+      <a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg><span class="lbl-long">Get NotchTime ·</span> <span data-price>$1</span></a>
     </div>
   </div>
 </header>
@@ -326,9 +328,9 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
   <!-- ============ HERO ============ -->
   <div class="hero wrap">
     <h1 class="rv">The <img class="inline-icon" src="assets/ScreenTimeIcon.png" alt=""> Screen&nbsp;Time alternative for Mac</h1>
-    <p class="lede rv">NotchUsage knows when you're actually watching, not just when a tab is open. It sorts every minute into focus, neutral and distraction, and nudges you from the notch while it's still happening.</p>
+    <p class="lede rv">NotchTime knows when you're actually watching, not just when a tab is open. It sorts every minute into focus, neutral and distraction, and nudges you from the notch while it's still happening.</p>
     <div class="cta-row rv">
-      <a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Get NotchUsage for <span data-price>$1</span></a>
+      <a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Get NotchTime for <span data-price>$1</span></a>
       <a class="btn btn-ghost" href="#glance">See what it does</a>
     </div>
     <div class="meta rv num">
@@ -339,7 +341,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 
     <div class="demo rv" id="demo">
       <div class="shot stage" id="stage" aria-live="polite">
-        <img class="on" data-frame="day" src="assets/shots/day.jpg" width="1623" height="1000" alt="The NotchUsage panel grown out of the notch, showing a day: 6h 9m of screen time, a timeline strip colored focus and distraction, and the top apps and sites.">
+        <img class="on" data-frame="day" src="assets/shots/day.jpg" width="1623" height="1000" alt="The NotchTime panel grown out of the notch, showing a day: 6h 9m of screen time, a timeline strip colored focus and distraction, and the top apps and sites.">
         <img data-frame="week" src="assets/shots/week.jpg" width="1623" height="1000" alt="The week view: 5h 22m a day, seven day lanes colored by focus and distraction, and parts of the day.">
         <img data-frame="month" src="assets/shots/month.jpg" width="1623" height="1000" alt="The month view: a grid with a square per day since tracking began.">
         <img data-frame="insights" src="assets/shots/insights.jpg" width="1623" height="1000" alt="The Insights page: focus and distraction a day, a Day Score of 74, and five patterns.">
@@ -443,7 +445,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
       </div>
       <div class="bento b2">
         <figure class="bcard rv"><div class="bimg short"><img src="assets/shots/card-focus-lock.jpg" width="1000" height="300" alt="A notch message: YouTube is paused until your Focus session ends." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-timer"/></svg><h4>Focus lock</h4><p>Distractions stay paused while a focus runs, and open again the moment a break starts.</p></figcaption></figure>
-        <figure class="bcard rv"><div class="bimg short"><img src="assets/shots/card-morning-lock.jpg" width="1000" height="300" alt="A notch message: YouTube is paused until 9:42 AM, the start of your day." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-moon"/></svg><h4>Morning lock</h4><p>Keep the first hour of your day clear of distractions, from whenever your day begins.</p></figcaption></figure>
+        <figure class="bcard rv"><div class="bimg short"><img src="assets/shots/card-morning-lock.jpg" width="808" height="242" alt="The Morning lock setting: Lock every distraction at the start of my day, for 1 hour, switched on." loading="lazy"></div><figcaption><svg class="bic"><use href="#i-moon"/></svg><h4>Morning lock</h4><p>Keep the first hour of your day clear of distractions, from whenever your day begins.</p></figcaption></figure>
       </div>
     </div>
   </section>
@@ -471,15 +473,15 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
     <div class="wrap">
       <div class="head rv">
         <div class="kicker">06</div>
-        <h2>NotchUsage compared with Screen&nbsp;Time</h2>
+        <h2>NotchTime compared with Screen&nbsp;Time</h2>
         <div class="prose">
-          <p>Screen Time is good at a weekly total. NotchUsage also tells you what you were really doing, whether it was focus or distraction, and taps you on the shoulder while it's still happening.</p>
+          <p>Screen Time is good at a weekly total. NotchTime also tells you what you were really doing, whether it was focus or distraction, and taps you on the shoulder while it's still happening.</p>
         </div>
         <div class="ask">
           <span class="lbl">Ask AI</span>
-          <a href="https://chatgpt.com/?q=Compare%20NotchUsage%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">ChatGPT</a>
-          <a href="https://claude.ai/new?q=Compare%20NotchUsage%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">Claude</a>
-          <a href="https://www.perplexity.ai/search?q=Compare%20NotchUsage%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">Perplexity</a>
+          <a href="https://chatgpt.com/?q=Compare%20NotchTime%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">ChatGPT</a>
+          <a href="https://claude.ai/new?q=Compare%20NotchTime%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">Claude</a>
+          <a href="https://www.perplexity.ai/search?q=Compare%20NotchTime%20with%20Apple%20Screen%20Time%20on%20Mac" target="_blank" rel="noopener">Perplexity</a>
         </div>
       </div>
       <div class="table-wrap rv">
@@ -488,7 +490,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
             <tr>
               <th>Feature</th>
               <th><span><img src="assets/ScreenTimeIcon.png" alt="">Screen Time</span></th>
-              <th><span><svg><use href="#logo"/></svg>NotchUsage</span></th>
+              <th><span><svg><use href="#logo"/></svg>NotchTime</span></th>
             </tr>
           </thead>
           <tbody>
@@ -515,17 +517,17 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
         <h2>Also included</h2>
       </div>
       <div class="grid">
-        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-focus.jpg" alt="Focus timer settings: 25 minutes of focus, 5 minute breaks, a 15 minute break every 4 focuses." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-timer"/></svg></span>Focus timer</h4><p>25 minutes on, 5 off, a longer break every fourth round, all adjustable. The notch says what's next.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-focus.jpg" alt="Focus timer settings: 25 minutes of focus, 5 minute breaks, a 15 minute break every 4 focuses." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-timer"/></svg></span>Focus timer</h4><p>25 minutes on, 5 off, a longer break every fourth round, all adjustable.</p></div>
         <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-pickups.jpg" alt="The Pickups tile for the notch: 3 pickups today." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-hand"/></svg></span>Pickups</h4><p>Each unlock of your Mac counts, shown under the day's total, or as a daily average for a week or month.</p></div>
         <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-quiet.jpg" alt="Notification settings: nudges for distraction, YouTube, Twitch and X, the weekly recap, and quiet hours from 10 PM to 7 AM." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-moon"/></svg></span>Quiet hours</h4><p>Pick the hours nudges rest, and turn them off site by site.</p></div>
         <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-parts.jpg" alt="Morning, afternoon, evening and night for a week, each with its top apps and sites." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-cal"/></svg></span>Parts of the day</h4><p>Week and month split into morning, afternoon, evening and night, each with its top apps and sites.</p></div>
-        <div class="card feat rv">
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-sites.jpg" alt="Apps and sites by name and icon: YouTube 1h 39m, Google Docs 1h 17m, Netflix 43m, Messages 22m, Figma 20m." loading="lazy"></div>
           <h4><span class="ic"><svg><use href="#i-tag"/></svg></span>Every site, by name</h4><p>Every site is tracked and shown by its brand name and real icon. Private windows count as time only.</p>
-          <div class="icon-row"><img src="assets/YouTubeIcon.png" alt="YouTube"><img src="assets/NetflixIcon.png" alt="Netflix"><img src="assets/InstagramIcon.png" alt="Instagram"><img src="assets/RedditIcon.png" alt="Reddit"><img src="assets/GmailIcon.png" alt="Gmail"><img src="assets/GoogleDocsIcon.png" alt="Google Docs"><img src="assets/NotionIcon.png" alt="Notion"><img src="assets/FigmaIcon.png" alt="Figma"></div>
+          <div class="icon-row"><img src="assets/YouTubeIcon.png" alt="YouTube"><img src="assets/NetflixIcon.png" alt="Netflix"><img src="assets/InstagramIcon.png" alt="Instagram"><img src="assets/RedditIcon.png" alt="Reddit"><img src="assets/GmailIcon.png" alt="Gmail"><img src="assets/GoogleDocsIcon.png" alt="Google Docs"><img src="assets/NotionIcon.png" alt="Notion"></div>
         </div>
         <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-share.jpg" alt="The glance beside the notch on your screen, and the same spot in a screen share with nothing there." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-eye"/></svg></span>Hidden from screen shares</h4><p>Nudges and the glance never show up in screen sharing, calls or recordings.</p></div>
         <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-nonotch.jpg" alt="On a screen without a notch, a nudge drops from the top center: 1 hour of YouTube today." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-display"/></svg></span>No notch? No problem</h4><p>On an external display or an older Mac, panels drop from the top center of the screen you're using.</p></div>
-        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-local.jpg" alt="The NotchUsage folder in Application Support on your Mac, with tracking.sqlite and the site icons." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-lock"/></svg></span>Stays on your Mac</h4><p>Everything is stored on your Mac. Nothing is uploaded, and there's no account to make.</p></div>
+        <div class="card feat rv"><div class="fshot"><img src="assets/shots/mini-local.jpg" alt="The NotchTime folder in Application Support on your Mac, with tracking.sqlite and the site icons." loading="lazy"></div><h4><span class="ic"><svg><use href="#i-lock"/></svg></span>Stays on your Mac</h4><p>Everything is stored on your Mac. Nothing is uploaded, and there's no account to make.</p></div>
       </div>
     </div>
   </section>
@@ -540,8 +542,8 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
       </div>
       <div class="ladder rv" id="ladder"></div>
       <div class="price-card rv">
-        <div style="font-weight:600">NotchUsage for Mac</div>
-        <div class="price-row"><span class="price num" data-price>$1</span><span class="was num">$9.99</span></div>
+        <div style="font-weight:600">NotchTime for Mac</div>
+        <div class="price-row"><span class="price num" data-price>$1</span><span class="was num">$10</span></div>
         <ul class="checks">
           <li>Watching time, apart from open time</li>
           <li>Focus, neutral and distraction for every app, site and page</li>
@@ -551,8 +553,8 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
           <li>Focus timer, pickups and color themes</li>
         </ul>
         <!-- TODO: link to the Dodo Payments checkout -->
-        <a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Buy for <span data-price>$1</span></a>
-        <div class="fine">One-time payment · 14-day refund, no questions · macOS 14 or later</div>
+        <a class="btn btn-primary" href="#pricing" data-buy><svg><use href="#i-apple"/></svg>Buy for <span data-price>$1</span></a>
+        <div class="fine">Prices in USD, excluding tax, and may vary by location.<br>Already bought? <a href="https://github.com/tylernam96/notch-screen-time-releases/releases/latest">Download NotchTime</a></div>
       </div>
     </div>
   </section>
@@ -570,6 +572,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
         <details><summary>Which browsers work?</summary><p>Safari, Chrome, Arc, Brave and Edge. Firefox isn't supported because it doesn't let other apps read its tabs. Time in every other app is tracked without any permission.</p></details>
         <details><summary>What if my Mac doesn't have a notch?</summary><p>Panels drop from the top center of the active screen instead, and ⌃⌥⌘N opens the analysis from anywhere.</p></details>
         <details><summary>Does it show up when I share my screen?</summary><p>No. Nudges and the glance are hidden from screen sharing and recordings.</p></details>
+        <details><summary>Is it a subscription?</summary><p>No. One payment, lifetime access, updates included. There is no account to create and nothing to renew.</p></details>
         <details><summary>What if it doesn't fit how I work?</summary><p>Email within 14 days of buying and we'll refund it, no questions asked.</p></details>
       </div>
     </div>
@@ -579,7 +582,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
     <div class="wrap rv">
       <svg width="72" height="72" style="margin:0 auto 24px;display:block"><use href="#logo"/></svg>
       <h2>See where the hours really go</h2>
-      <div class="cta-row"><a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Get NotchUsage for <span data-price>$1</span></a></div>
+      <div class="cta-row"><a class="btn btn-primary" href="#pricing"><svg><use href="#i-apple"/></svg>Get NotchTime for <span data-price>$1</span></a></div>
       <div class="meta num"><span class="hot" data-seats-text></span><span>macOS 14 or later</span></div>
       <p class="note">Screenshots are of the app itself, filled with sample data.</p>
     </div>
@@ -588,13 +591,14 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 
 <footer>
   <div class="wrap">
-    <span>© 2026 NotchUsage</span>
+    <span>© 2026 NotchTime</span>
     <nav aria-label="Legal">
+      <a href="guide.html">Guide</a>
       <a href="privacy.html">Privacy</a>
       <a href="terms.html">Terms</a>
       <a href="refunds.html">Refunds</a>
-      <!-- TODO(ship): replace support@notchusage.example with the real support address (search the repo for it). -->
-      <a href="mailto:support@notchusage.example">Contact</a>
+      <!-- TODO(ship): replace support@notchtime.example with the real support address (search the repo for it). -->
+      <a href="mailto:support@notchtime.example">Contact</a>
     </nav>
   </div>
 </footer>
@@ -603,14 +607,21 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
 document.documentElement.classList.add('js');
 
 /* ---------------- pricing ---------------- */
-// Launch pricing: the first 10 buyers pay $1, the next 100 $4.99, then $9.99. Update SOLD by hand as copies sell.
+// Launch pricing: the first 10 customers pay $1, the next 90 $5, then $10. Update SOLD by hand as copies sell.
+// Each tier's checkout link carries its Dodo discount code (90% off, then 50% off, then none).
+// TODO(ship): the three Dodo checkout links. Until a tier has one, its Buy button stays on #pricing.
 const SOLD = 0;
-const TIERS = [{ price: 1, seats: 10 }, { price: 4.99, seats: 100 }, { price: 9.99 }];
+const TIERS = [
+  { price: 1, seats: 10, checkout: '' },
+  { price: 5, seats: 90, checkout: '' },
+  { price: 10, checkout: '' },
+];
 const money = p => '$' + (Number.isInteger(p) ? p : p.toFixed(2));
 let tierStart = 0, tierNow = TIERS.length - 1;
 for (let i = 0; i < TIERS.length - 1; i++) { if (SOLD < tierStart + TIERS[i].seats) { tierNow = i; break; } tierStart += TIERS[i].seats; }
 const tier = TIERS[tierNow], soldInTier = SOLD - tierStart;
 document.querySelectorAll('[data-price]').forEach(el => el.textContent = money(tier.price));
+if (tier.checkout) document.querySelectorAll('[data-buy]').forEach(el => el.href = tier.checkout);
 document.querySelectorAll('[data-seats-text]').forEach(el => {
   if (tier.seats) el.textContent = `${tier.seats - soldInTier} of ${tier.seats} left at ${money(tier.price)}`; else el.remove();
 });
@@ -621,7 +632,7 @@ document.querySelectorAll('[data-seats-text]').forEach(el => {
     const before = TIERS.slice(0, i).reduce((n, x) => n + x.seats, 0);
     if (!t.seats) return `After ${before} customers`;
     if (i === tierNow) return `${t.seats} spots only${soldInTier ? ` · <b>${soldInTier} already bought</b>` : ''}`;
-    return i === 0 ? `First ${t.seats} buyers` : `Next ${t.seats} buyers`;
+    return i === 0 ? `First ${t.seats} customers` : `Next ${t.seats} customers`;
   };
   document.getElementById('ladder').innerHTML =
     `<div class="rail"><div class="fill" style="width:${fill}%"></div>${TIERS.map((t, i) => `<i class="stop ${i < tierNow ? 'past' : i === tierNow ? 'now' : ''}" style="left:${pos(i)}%"></i>`).join('')}</div>

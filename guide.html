@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to use your MacBook notch to see where your time goes · NotchTime</title>
+<meta name="description" content="The black strip beside your MacBook's camera can tell you where your day went. A walk through NotchTime: the glance, the hourly nudge, the timeline, Insights, goals and locks.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%2318181b'/%3E%3Cpath d='M20 0h24v6a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8z' fill='%23000'/%3E%3Crect x='12' y='40' width='18' height='8' rx='3' fill='%23199E70'/%3E%3Crect x='32' y='40' width='8' height='8' rx='3' fill='%2348484d'/%3E%3Crect x='42' y='40' width='10' height='8' rx='3' fill='%23D95926'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Same tokens, nav and footer as index.html. */
+:root {
+  --bg: #FAF6EF;
+  --surface: #FFFEFC;
+  --surface-2: #F3ECE1;
+  --surface-3: #EBE3D7;
+  --border: #EBE3D7;
+  --border-2: #DDD2C2;
+  --text: #17150F;
+  --muted: #6D6459;
+  --faint: #9B9184;
+  --accent: #17150F;
+  --accent-hover: #2E2A22;
+  --c-focus: #4E9F78;
+  --c-dist: #D95926;
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 400 17px/1.7 var(--font); -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+/* nav */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: saturate(160%) blur(16px); -webkit-backdrop-filter: saturate(160%) blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav .wrap { display: flex; align-items: center; gap: 28px; height: 74px; position: relative; }
+.brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; text-decoration: none; letter-spacing: -.01em; }
+.brand svg { width: 34px; height: 34px; }
+.nav-links { display: flex; gap: 32px; font-size: 16px; color: var(--muted); position: absolute; left: 50%; transform: translateX(-50%); }
+.nav-links a { text-decoration: none; }
+.nav-links a:hover, .nav-links a[aria-current] { color: var(--text); }
+.nav-right { margin-left: auto; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 999px;
+  font-weight: 600; font-size: 15px; text-decoration: none; white-space: nowrap; transition: background .15s;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn svg { width: 16px; height: 16px; }
+
+/* article */
+.article { padding: 56px 0 40px; }
+.back { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+.back:hover { color: var(--text); }
+.eyebrow { margin: 40px 0 12px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-dist); }
+h1 { font-size: clamp(36px, 6vw, 56px); line-height: 1.06; letter-spacing: -.035em; font-weight: 700; margin: 0 0 20px; text-wrap: balance; }
+.lede { font-size: 20px; line-height: 1.55; color: var(--muted); margin: 0; text-wrap: pretty; }
+.byline { font-size: 13px; color: var(--faint); margin: 20px 0 0; }
+h2 { font-size: clamp(26px, 3.4vw, 32px); line-height: 1.15; letter-spacing: -.025em; font-weight: 600; margin: 64px 0 16px; text-wrap: balance; }
+h3 { font-size: 19px; letter-spacing: -.01em; font-weight: 600; margin: 36px 0 8px; }
+.article p, .article li { color: var(--muted); }
+.article p { margin: 0 0 16px; text-wrap: pretty; }
+.article b { color: var(--text); font-weight: 600; }
+.article ol, .article ul { margin: 0 0 16px; padding-left: 22px; }
+.article li { margin-bottom: 8px; padding-left: 4px; }
+.article li::marker { color: var(--text); font-weight: 600; }
+.article a:not(.btn) { color: var(--text); text-underline-offset: 3px; text-decoration-color: var(--border-2); }
+.article a:not(.btn):hover { text-decoration-color: currentColor; }
+kbd { font: 600 .85em var(--font); padding: 1px 7px; border-radius: 6px; background: var(--surface); border: 1px solid var(--border-2); color: var(--text); }
+
+/* each screenshot fills its frame with a thin border, short enough that a feature's text, shot and caption share one screen */
+figure { margin: 28px 0 40px; text-align: center; }
+.frame {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 20px;
+  max-width: 100%; padding: 28px; border-radius: 22px; vertical-align: top;
+  background: radial-gradient(130% 100% at 50% -20%, #fdf8f2 0%, #f2e2ce 48%, #e2c3a1 100%);
+  box-shadow: inset 0 0 0 1px rgba(60,40,20,.06);
+}
+.frame img {
+  width: auto; max-width: 100%; max-height: min(500px, 58vh);
+  border-radius: 12px; box-shadow: 0 18px 40px rgba(40,25,10,.3);
+}
+/* shots that already sit on the desktop: no second backdrop behind them */
+.frame.bare { padding: 0; background: none; box-shadow: none; }
+.frame.bare img { border-radius: 16px; box-shadow: 0 18px 40px rgba(40,25,10,.22); }
+figcaption { font-size: 13px; color: var(--muted); margin-top: 12px; text-align: center; }
+
+/* notch panels where they live: the top of a desktop, grown out of the notch over the menu bar.
+   Sized in cqw so 1cqw is the same on-screen point at any width (a 760pt-wide slice of the screen). */
+.desk { container-type: inline-size; border-radius: 22px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(60,40,20,.06); }
+.desk + .desk { margin-top: 16px; }
+.screen { position: relative; padding-bottom: 9cqw; background: #6b6a4a url(assets/shots/desktop.jpg) center 30% / cover; }
+.screen.short { padding-bottom: 4cqw; }
+.menubar {
+  position: absolute; inset: 0 0 auto; height: 3.2cqw; padding: 0 2.2cqw;
+  display: flex; align-items: center; justify-content: space-between;
+  font: 500 1.5cqw/1 var(--font); color: rgba(255,255,255,.92);
+  background: rgba(40,32,18,.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+.menubar span { display: flex; align-items: center; gap: 2.2cqw; }
+.menubar b { font-weight: 700; }
+.menubar svg { width: 1.7cqw; height: 1.7cqw; }
+.notch { position: absolute; left: 50%; top: 0; width: 24cqw; height: 3.2cqw; transform: translateX(-50%); background: #000; border-radius: 0 0 1.1cqw 1.1cqw; }
+.screen > img { position: relative; z-index: 1; margin: 0 auto; width: calc(var(--w) * 1cqw); filter: drop-shadow(0 1.4cqw 2.4cqw rgba(20,15,5,.4)); }
+
+/* Settings, drawn the way the app draws it, on the desktop; the controls work */
+.settings { padding: 36px 6%; border-radius: 22px; background: #6b6a4a url(assets/shots/desktop.jpg) center 60% / cover; }
+.panel { max-width: 600px; margin: 0 auto; padding: 24px; border-radius: 20px; background: #000; color: #f2f2f2; text-align: left; font-size: 15px; line-height: 1.3; box-shadow: 0 18px 40px rgba(20,15,5,.4); }
+.group-title { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-weight: 600; color: #8e8e93; }
+.group-title svg { width: 18px; height: 18px; }
+.group + .group { margin-top: 22px; }
+.box { background: #0e0e0e; border: 1px solid #262626; border-radius: 14px; padding: 0 18px; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 50px; }
+.row + .row { border-top: 1px solid #222; }
+.stepper { display: flex; align-items: center; gap: 12px; }
+.stepper output { min-width: 84px; text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.round { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #333; background: #1c1c1e; color: #f2f2f2; font: 400 18px/1 var(--font); cursor: pointer; }
+.round:disabled { opacity: .35; cursor: default; }
+.switch { width: 46px; height: 28px; flex: none; border-radius: 99px; border: 0; padding: 3px; background: #39393d; cursor: pointer; transition: background .2s; }
+.switch::before { content: ""; display: block; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.switch[aria-checked="true"] { background: #2f7bf6; }
+.switch[aria-checked="true"]::before { transform: translateX(18px); }
+.pill { padding: 5px 12px; border-radius: 8px; background: #1c1c1e; border: 1px solid #333; font-size: 14px; }
+.row.dim .pill { opacity: .4; }
+.preview { padding: 18px 0; }
+.tl { display: flex; gap: 3px; height: 44px; border-radius: 8px; background: #161616; overflow: hidden; }
+.tl i { flex: var(--f); }
+.tl i.f, .key i.f, .sw i.f { background: var(--t-focus); }
+.tl i.n, .key i.n, .sw i.n { background: var(--t-neutral); }
+.tl i.d, .key i.d, .sw i.d { background: var(--t-dist); }
+.tl i, .key i, .sw i { transition: background .3s; }
+.key { display: flex; gap: 20px; margin: 14px 0 18px; color: #a1a1a6; font-size: 14px; }
+.key span { display: flex; align-items: center; gap: 8px; }
+.key i { width: 14px; height: 14px; border-radius: 3px; }
+.themes { display: flex; flex-wrap: wrap; gap: 10px; }
+.theme { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; min-width: 104px; border-radius: 12px; border: 2px solid #262626; background: #121212; color: #a1a1a6; font: 500 14px/1 var(--font); text-align: left; cursor: pointer; }
+.theme:hover { border-color: #444; }
+.theme[aria-pressed="true"] { border-color: #a1a1a6; color: #fff; background: #1c1c1e; }
+.sw { display: flex; gap: 4px; }
+.sw i { width: 24px; height: 14px; border-radius: 3px; }
+.colors { --t-focus: #199E70; --t-neutral: #5A5955; --t-dist: #D95926; }
+.theme:nth-child(1) .sw { --t-focus: #BF5AF2; --t-neutral: #3A3A3C; --t-dist: #FF9F0A; }
+.theme:nth-child(2) .sw { --t-focus: #199E70; --t-neutral: #5A5955; --t-dist: #D95926; }
+.theme:nth-child(3) .sw { --t-focus: #2EC4B6; --t-neutral: #3A4A5C; --t-dist: #FF6B6B; }
+.theme:nth-child(4) .sw { --t-focus: #5B8DEF; --t-neutral: #4A4560; --t-dist: #F06292; }
+
+.callout { margin: 24px 0; padding: 18px 22px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
+.callout p { margin: 0; color: var(--text); font-size: 16px; }
+
+.end { margin: 64px 0 0; padding: 36px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; }
+.end svg.logo { width: 56px; height: 56px; margin: 0 auto 18px; }
+.end h2 { margin: 0 0 10px; }
+.end p { margin: 0 auto 24px; max-width: 460px; }
+
+footer { border-top: 1px solid var(--border); margin-top: 96px; padding: 28px 0 40px; font-size: 13px; color: var(--muted); }
+footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+footer a { text-decoration: none; } footer a:hover { color: var(--text); }
+
+@media (max-width: 960px) {
+  .nav-links { display: none; }
+}
+@media (max-width: 700px) {
+  .wrap { padding: 0 16px; }
+  .article { padding-top: 40px; }
+  .frame { border-radius: 16px; padding: 12px; gap: 12px; }
+  .settings { padding: 16px 12px; border-radius: 16px; }
+  .panel { padding: 16px; font-size: 14px; }
+  .stepper output { min-width: 64px; }
+  .desk { border-radius: 16px; }
+  .end { padding: 28px 20px; }
+  .nav .btn .lbl-long { display: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="15" fill="#18181B"/>
+      <rect x=".5" y=".5" width="63" height="63" rx="14.5" fill="none" stroke="rgba(255,255,255,.12)"/>
+      <path d="M20 0h24v6a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8z" fill="#000"/>
+      <rect x="11" y="38" width="20" height="10" rx="3" style="fill:var(--c-focus)"/>
+      <rect x="33" y="38" width="8" height="10" rx="3" fill="#48484D"/>
+      <rect x="43" y="38" width="10" height="10" rx="3" style="fill:var(--c-dist)"/>
+    </symbol>
+    <symbol id="i-apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8s2.3-1.3 3.1-2.5c1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.2zM13.9 5.2c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html"><svg><use href="#logo"/></svg>NotchTime</a>
+    <nav class="nav-links">
+      <a href="index.html#glance">Features</a>
+      <a href="index.html#compare">Compare</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="guide.html" aria-current="page">Guide</a>
+    </nav>
+    <div class="nav-right">
+      <a class="btn btn-primary" href="index.html#pricing"><svg><use href="#i-apple"/></svg><span class="lbl-long">Get NotchTime</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="article">
+    <a class="back" href="index.html">← Back</a>
+    <p class="eyebrow">Guide</p>
+    <h1>How to use your MacBook notch to see where your time goes</h1>
+    <p class="lede">The black strip at the top of your screen holds a camera and nothing else. Here is how to make it tell you where your day went, while it's still going.</p>
+    <p class="byline">11 October 2026 · 7 min read</p>
+
+    <h2>First, what is the notch?</h2>
+    <p>It's the black cutout at the top of every MacBook Pro since 2021 and every MacBook Air since 2022. The camera lives in it, and the menu bar fills the space on either side.</p>
+    <p>The notch itself does nothing. You can't click it, and no menu can sit there. It's the one part of your screen you look past a hundred times a day without reading anything.</p>
+    <p>That's what makes it a good place for a number you should see often but don't want to go looking for, like how long YouTube has had you today. <a href="index.html">NotchTime</a> puts it there. If your Mac has no notch, or you're on an external display, the same panels drop from the top center of the screen you're using.</p>
+
+    <h2>The whole app, in three moves</h2>
+    <ol>
+      <li><b>Hover the notch.</b> A small glance appears beside it: a focus timer on one side, today's screen time on the other, and your top sites underneath.</li>
+      <li><b>Click it</b>, or press <kbd>⌃⌥⌘N</kbd> from anywhere, and the full analysis grows out of the notch: your day, week or month, Insights and Goals.</li>
+      <li><b>Move on.</b> Press Esc or click somewhere else and it folds back into the notch.</li>
+    </ol>
+    <p>Everything else happens on its own. There's no window to keep open and nothing to start each morning.</p>
+    <figure>
+      <div class="frame bare"><img src="assets/shots/day.jpg" width="1623" height="1000" alt="The NotchTime analysis grown out of the notch, showing a day: 6h 9m of screen time, a timeline strip colored focus and distraction, and the top apps and sites." loading="lazy"></div>
+      <figcaption>The analysis, opened from the notch.</figcaption>
+    </figure>
+
+    <h2>It counts what you watch, not what's open</h2>
+    <p>Most screen time trackers count a tab the moment it's in front. Leave YouTube paused while you answer an email in another window and that's an hour of YouTube, apparently.</p>
+    <p>NotchTime checks every few seconds which tab is in front and what macOS says is playing. A minute only counts as <b>watching</b> when the two match. Audio from a tab in the background counts as <b>listening</b>, kept apart, and music never counts as a distraction. A paused video is just open.</p>
+    <p>It works with Safari, Chrome, Arc, Brave and Edge, and every site shows up by its own name and icon. Time in every other app is tracked without asking for any permission. Private windows count as time only, with no site names.</p>
+
+    <h2>Sort your apps, once</h2>
+    <p>Every minute goes into one of three buckets: <b>focus</b>, <b>neutral</b> or <b>distraction</b>. Work apps and sites start as focus, feeds and video sites as distraction, and everything else as neutral.</p>
+    <p>You'll disagree with some of that, and you should. Drag an app from one bucket to another, or right-click any app, site or even a single page to move it. A YouTube tutorial can be focus while the rest of YouTube stays a distraction. Changes apply to past days too, so your history always matches how you think about your time today.</p>
+    <figure>
+      <div class="frame"><img src="assets/shots/card-buckets.jpg" width="1400" height="836" alt="Apps and sites in three buckets, Focus, Neutral and Distraction, with locks and limits below." loading="lazy"></div>
+      <figcaption>Focus, Neutral and Distraction, side by side.</figcaption>
+    </figure>
+
+    <h2>The best part: a nudge while it's still happening</h2>
+    <p>Screen Time tells you on Sunday that you spent nine hours on YouTube last week. By then there's nothing to do with that number.</p>
+    <p>NotchTime tells you at the time. At every full hour on a site, a small panel grows out of the notch, says <b>1 hour of YouTube today</b>, and folds back in after 7 seconds. There are no buttons and no decision to make. You just find out, and do what you like with it.</p>
+    <figure>
+      <div class="desk"><div class="screen"><div class="menubar"><span><svg><use href="#i-apple"/></svg><b>Safari</b>File Edit View</span><span>Sun 11 Oct&nbsp; 9:41</span></div><div class="notch"></div><img style="--w:44.5" src="assets/shots/nudge-youtube.png" width="676" height="130" alt="A nudge under the notch: 1 hour of YouTube today." loading="lazy"></div></div>
+      <figcaption>A nudge, gone again in 7 seconds.</figcaption>
+    </figure>
+    <p>There's also a nudge at each full hour of distraction in a day, across every app and site in that bucket, and once a week a short recap of how last week compared with the one before.</p>
+    <div class="callout"><p>Nudges never show up when you share your screen, join a call or record. Set quiet hours for the times you don't want them, or turn them off site by site.</p></div>
+
+    <h2>Leave a number beside the notch</h2>
+    <p>You don't have to open anything to know how the day is going. Hover the notch and the glance shows two things, one on each side, and you pick which.</p>
+    <figure>
+      <div class="desk"><div class="screen short"><div class="menubar"><span><svg><use href="#i-apple"/></svg><b>Safari</b>File Edit View</span><span>Sun 11 Oct&nbsp; 9:41</span></div><div class="notch"></div><img style="--w:47" src="assets/shots/glance-focus.png" width="713" height="81" alt="Glance with a focus session running: 24:58 left, and a ring at 1h 27m toward today's screen time goal." loading="lazy"></div></div>
+      <div class="desk"><div class="screen short"><div class="menubar"><span><svg><use href="#i-apple"/></svg><b>Safari</b>File Edit View</span><span>Sun 11 Oct&nbsp; 9:41</span></div><div class="notch"></div><img style="--w:47" src="assets/shots/glance-current.png" width="714" height="81" alt="Glance: Messages at 15m today on the left, 1h 12m of distraction on the right." loading="lazy"></div></div>
+      <figcaption>The glance: a focus timer beside today's goal ring, or the app you're in beside today's distraction.</figcaption>
+    </figure>
+    <p>The choices include today's screen time, the app you're in and how long it's had you today, focus or distraction so far, a goal ring, yesterday's Day Score and pickups. Settings draws every option as it would look, next to a live preview.</p>
+    <figure>
+      <div class="frame"><img src="assets/shots/card-notch.jpg" width="1024" height="736" alt="Notch customization: the notch bar as it looks now, then a tile for every choice on the right side." loading="lazy"></div>
+      <figcaption>Pick what sits on each side of the notch.</figcaption>
+    </figure>
+
+    <h2>Read your day as one strip</h2>
+    <p>Open the analysis and the day is a single strip: focus in green, distraction in orange, neutral in gray, with a white dot wherever a nudge came. Under it, the apps and sites that took the most time, with how much of that was watching.</p>
+    <h3>Week</h3>
+    <p>A lane per day, hour by hour, then the week split into mornings, afternoons, evenings and nights, each with its top apps. This is where you notice that evenings are where the distraction lives.</p>
+    <figure>
+      <div class="frame bare"><img src="assets/shots/card-week.jpg" width="1000" height="616" alt="The week: a lane per day in focus and distraction, then morning, afternoon, evening and night with their top apps." loading="lazy"></div>
+      <figcaption>The week, a lane per day.</figcaption>
+    </figure>
+    <h3>Month</h3>
+    <p>A square for every day since you started, colored by how it leaned. Good weeks and bad ones stand out without reading a single number.</p>
+    <figure>
+      <div class="frame bare"><img src="assets/shots/card-month.jpg" width="1000" height="616" alt="The month: a square for every day since tracking began, colored from focus to distraction." loading="lazy"></div>
+      <figcaption>Every day since you started.</figcaption>
+    </figure>
+
+    <h2>Find out what your good days have in common</h2>
+    <p>After three days of use, Insights opens up. It shows focus and distraction a day for the last 7, 30 or 90 days, each against the stretch before, and a short list of patterns. A pattern only appears when your data backs it, so some weeks there are fewer.</p>
+    <p>Beside them sits the <b>Day Score</b>: one number out of 100 for yesterday. It weighs your focus, your longest focus stretch, distraction, whether the morning started clear and whether the night stayed quiet, all against your own usual day. It never streaks and never compares you with anyone else. Hover it to see what helped most and what held it back.</p>
+    <figure>
+      <div class="frame bare"><img src="assets/shots/insights.jpg" width="1623" height="1000" alt="The Insights page: focus and distraction a day, a Day Score of 74, and five patterns." loading="lazy"></div>
+      <figcaption>Insights: focus, distraction, patterns and yesterday's Day Score.</figcaption>
+    </figure>
+
+    <h2>Set a limit that can say no for you</h2>
+    <p>Knowing isn't always enough. Goals let you set a daily limit on your total screen time, on distraction, or on a single app or site.</p>
+    <p>Any goal can <b>warn</b> you from the notch as you get close, and then <b>block</b> once you reach it. Blocking is gentle: the app hides and the tab goes blank, but nothing is quit and no work is lost.</p>
+    <figure>
+      <div class="frame bare"><img src="assets/shots/editgoal.jpg" width="1623" height="998" alt="A YouTube goal of 1 hour a day: warn at 45 minutes, block at 1 hour, beside the last 7 days against the goal." loading="lazy"></div>
+      <figcaption>An hour of YouTube a day: a warning at 45 minutes, a block at an hour.</figcaption>
+    </figure>
+    <figure>
+      <div class="desk"><div class="screen"><div class="menubar"><span><svg><use href="#i-apple"/></svg><b>Safari</b>File Edit View</span><span>Sun 11 Oct&nbsp; 9:41</span></div><div class="notch"></div><img style="--w:60" src="assets/shots/goal-warning.png" width="914" height="254" alt="A goal warning under the notch: Distraction today, 1h 41m, 19 minutes until it blocks." loading="lazy"></div></div>
+      <figcaption>The warning tells you how long until it blocks.</figcaption>
+    </figure>
+    <p>Two locks work without a limit:</p>
+    <ul>
+      <li><b>Focus lock</b> keeps distractions paused while a focus session runs, and opens them again the moment a break starts.</li>
+      <li><b>Morning lock</b> keeps the first hour of your day clear of distractions, counted from whenever your day actually begins.</li>
+    </ul>
+    <figure>
+      <div class="desk"><div class="screen"><div class="menubar"><span><svg><use href="#i-apple"/></svg><b>Safari</b>File Edit View</span><span>Sun 11 Oct&nbsp; 9:41</span></div><div class="notch"></div><img style="--w:65.4" src="assets/shots/card-focus-lock.png" width="994" height="236" alt="A notch message: YouTube is paused until your Focus session ends." loading="lazy"></div></div>
+      <figcaption>The Focus lock at work.</figcaption>
+    </figure>
+    <figure>
+      <div class="settings"><div class="panel">
+        <div class="group">
+          <p class="group-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Blocking</p>
+          <div class="box">
+            <div class="row"><span>Lock every distraction during Focus</span><button class="switch" role="switch" aria-checked="true" aria-label="Lock every distraction during Focus"></button></div>
+            <div class="row"><span>Lock every distraction at the start of my day</span><span class="stepper"><span class="pill">1h</span><button class="switch" role="switch" aria-checked="true" aria-label="Lock every distraction at the start of my day"></button></span></div>
+          </div>
+        </div>
+      </div></div>
+      <figcaption>Both locks, in Settings. Try the switches.</figcaption>
+    </figure>
+    <p>Every lock can be switched off. They're there to make the good choice the easy one, not to argue with you.</p>
+
+    <h2>A focus timer, already in the notch</h2>
+    <p>Hover the notch and start a focus from the glance. It counts down beside the notch: 25 minutes on, 5 off, and a longer break every fourth round, all adjustable. Pair it with the Focus lock and the sites you'd drift to stay shut until the break.</p>
+    <figure>
+      <div class="settings"><div class="panel">
+        <div class="group">
+          <p class="group-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></svg>Focus timer</p>
+          <div class="box">
+            <div class="row"><span>Focus</span><span class="stepper" data-min="5" data-max="120" data-step="5" data-unit="min"><button class="round" aria-label="Less focus">−</button><output>25</output><button class="round" aria-label="More focus">+</button></span></div>
+            <div class="row"><span>Break</span><span class="stepper" data-min="1" data-max="30" data-step="1" data-unit="min"><button class="round" aria-label="Less break">−</button><output>5</output><button class="round" aria-label="More break">+</button></span></div>
+            <div class="row"><span>Long break</span><span class="stepper" data-min="5" data-max="60" data-step="5" data-unit="min"><button class="round" aria-label="Less long break">−</button><output>15</output><button class="round" aria-label="More long break">+</button></span></div>
+            <div class="row"><span>Long break every</span><span class="stepper" data-min="2" data-max="8" data-step="1" data-unit="focus" data-units="focuses"><button class="round" aria-label="Less long break every">−</button><output>4</output><button class="round" aria-label="More long break every">+</button></span></div>
+            <div class="row"><span>Sound</span><button class="switch" role="switch" aria-checked="false" aria-label="Sound"></button></div>
+          </div>
+        </div>
+      </div></div>
+      <figcaption>The focus timer in Settings: rounds, breaks and the long break. The buttons work.</figcaption>
+    </figure>
+
+    <h2>The small things</h2>
+    <ul>
+      <li><b>Pickups.</b> Every unlock of your Mac counts, shown under the day's total or as a daily average.</li>
+      <li><b>Colors.</b> Pick Vivid, Calm, Ocean or Berry, or set your own, and every chart re-colors at once.</li>
+      <li><b>Hidden from screen shares.</b> The glance and every nudge stay off calls and recordings.</li>
+      <li><b>Stays on your Mac.</b> Everything is stored locally. Nothing is uploaded, and there's no account.</li>
+    </ul>
+    <figure>
+      <div class="settings"><div class="panel colors">
+        <div class="group">
+          <p class="group-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-1.2-1-1.4-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4c0-4.6-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>Colors</p>
+          <div class="box preview">
+            <div class="tl" aria-hidden="true"><i class="gap" style="--f:14"></i><i class="f" style="--f:5"></i><i class="n" style="--f:1"></i><i class="f" style="--f:6"></i><i class="d" style="--f:2"></i><i class="n" style="--f:1"></i><i class="f" style="--f:8"></i><i class="gap" style="--f:4"></i><i class="d" style="--f:3"></i><i class="f" style="--f:5"></i><i class="n" style="--f:1"></i><i class="d" style="--f:5"></i><i class="f" style="--f:6"></i><i class="d" style="--f:2"></i><i class="gap" style="--f:8"></i><i class="f" style="--f:4"></i><i class="d" style="--f:4"></i><i class="n" style="--f:1"></i><i class="gap" style="--f:9"></i></div>
+            <div class="key"><span><i class="f"></i>Focus</span><span><i class="n"></i>Neutral</span><span><i class="d"></i>Distraction</span></div>
+            <div class="themes" role="group" aria-label="Color theme"><button class="theme" aria-pressed="false" data-theme="vivid"><span class="sw"><i class="f"></i><i class="n"></i><i class="d"></i></span>Vivid</button><button class="theme" aria-pressed="true" data-theme="calm"><span class="sw"><i class="f"></i><i class="n"></i><i class="d"></i></span>Calm</button><button class="theme" aria-pressed="false" data-theme="ocean"><span class="sw"><i class="f"></i><i class="n"></i><i class="d"></i></span>Ocean</button><button class="theme" aria-pressed="false" data-theme="berry"><span class="sw"><i class="f"></i><i class="n"></i><i class="d"></i></span>Berry</button></div>
+          </div>
+        </div>
+      </div></div>
+      <figcaption>Colors in Settings. Pick a theme and the strip, and this page, follow.</figcaption>
+    </figure>
+
+    <h2>So what does a normal day look like?</h2>
+    <p>You open the Mac and the Morning lock keeps the feeds shut for the first hour, so the day starts with the work instead of the news. You start a focus from the notch, and when you reach for X halfway through, it's paused until the break.</p>
+    <p>After lunch a video turns into three. At the hour, the notch says so, and folds away. You close the tab, or you don't, but you knew. Late in the afternoon a warning drops from the notch: 19 minutes of distraction left before it blocks.</p>
+    <p>The next morning, Insights gives yesterday a 74 and tells you the long focus stretch before lunch is what carried it.</p>
+    <p>You never opened Screen Time. You never had to remember to look.</p>
+
+    <h2>What it costs</h2>
+    <p>NotchTime is a one-time purchase with updates included. No subscription, no account. It needs macOS 14 or later, and if it doesn't fit how you work, you can get a refund within 14 days.</p>
+    <p>Your notch has been holding a camera this whole time. It can do a little more than that.</p>
+
+    <div class="end">
+      <svg class="logo"><use href="#logo"/></svg>
+      <h2>See where the hours really go</h2>
+      <p>Hourly nudges, a timeline of your day, Insights and goals, all from the notch.</p>
+      <a class="btn btn-primary" href="index.html#pricing"><svg><use href="#i-apple"/></svg>Get NotchTime</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 NotchTime</span>
+    <nav aria-label="Legal">
+      <a href="guide.html">Guide</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="refunds.html">Refunds</a>
+      <a href="mailto:support@notchtime.example">Contact</a>
+    </nav>
+  </div>
+</footer>
+<script>
+// The Settings recreations: steppers, switches and color themes work like the app's.
+document.querySelectorAll('.stepper[data-step]').forEach(st => {
+  const out = st.querySelector('output'), [less, more] = st.querySelectorAll('button');
+  const { min, max, step, unit, units } = st.dataset;
+  const set = n => {
+    out.dataset.n = n;
+    out.textContent = n + ' ' + (units && n !== 1 ? units : unit);
+    less.disabled = n <= +min; more.disabled = n >= +max;
+  };
+  set(parseInt(out.textContent));
+  less.onclick = () => set(Math.max(+min, +out.dataset.n - +step));
+  more.onclick = () => set(Math.min(+max, +out.dataset.n + +step));
+});
+document.querySelectorAll('.switch').forEach(sw => sw.onclick = () => {
+  const on = sw.getAttribute('aria-checked') !== 'true';
+  sw.setAttribute('aria-checked', on);
+  const row = sw.closest('.row');
+  if (row.querySelector('.pill')) row.classList.toggle('dim', !on);
+});
+const themes = {
+  vivid: ['#BF5AF2', '#3A3A3C', '#FF9F0A'], calm: ['#199E70', '#5A5955', '#D95926'],
+  ocean: ['#2EC4B6', '#3A4A5C', '#FF6B6B'], berry: ['#5B8DEF', '#4A4560', '#F06292']
+};
+document.querySelectorAll('.theme').forEach(btn => btn.onclick = () => {
+  const [f, n, d] = themes[btn.dataset.theme], panel = btn.closest('.colors');
+  panel.querySelectorAll('.theme').forEach(b => b.setAttribute('aria-pressed', b === btn));
+  panel.style.setProperty('--t-focus', f); panel.style.setProperty('--t-neutral', n); panel.style.setProperty('--t-dist', d);
+  document.documentElement.style.setProperty('--c-focus', f);
+  document.documentElement.style.setProperty('--c-dist', d);
+});
+</script>
+</body>
+</html>
