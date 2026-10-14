@@ -552,8 +552,8 @@ footer a { text-decoration: none; } footer a:hover { color: var(--text); }
           <li>Goal blocks, the Focus lock and the Morning lock</li>
           <li>Focus timer, pickups and color themes</li>
         </ul>
-        <!-- TODO: link to the Dodo Payments checkout -->
         <a class="btn btn-primary" href="#pricing" data-buy><svg><use href="#i-apple"/></svg>Buy for <span data-price>$1</span></a>
+        <div class="fine" data-code hidden>Use code <b></b> at checkout for this price.</div>
         <div class="fine">Prices in USD, excluding tax, and may vary by location.<br>Already bought? <a href="https://github.com/tylernam96/notch-screen-time-releases/releases/latest">Download NotchTime</a></div>
       </div>
     </div>
@@ -608,20 +608,23 @@ document.documentElement.classList.add('js');
 
 /* ---------------- pricing ---------------- */
 // Launch pricing: the first 10 customers pay $1, the next 90 $5, then $10. Update SOLD by hand as copies sell.
-// Each tier's checkout link carries its Dodo discount code (90% off, then 50% off, then none).
-// TODO(ship): the three Dodo checkout links. Until a tier has one, its Buy button stays on #pricing.
+// Dodo checkout links can't apply a discount code, so the current tier's code is shown under the Buy button
+// for the buyer to type: 90% off (limit 10), then 50% off (limit 90), then none.
+// TODO(ship): the live-mode checkout link; this one is test mode.
+const CHECKOUT = 'https://test.checkout.dodopayments.com/buy/pdt_0Nphll1OYFH5W2CrBKGYf?quantity=1';
 const SOLD = 0;
 const TIERS = [
-  { price: 1, seats: 10, checkout: '' },
-  { price: 5, seats: 90, checkout: '' },
-  { price: 10, checkout: '' },
+  { price: 1, seats: 10, code: 'FIRST10' }, // 90% off, limit 10
+  { price: 5, seats: 90, code: 'EARLY90' }, // 50% off, limit 90
+  { price: 10 },
 ];
 const money = p => '$' + (Number.isInteger(p) ? p : p.toFixed(2));
 let tierStart = 0, tierNow = TIERS.length - 1;
 for (let i = 0; i < TIERS.length - 1; i++) { if (SOLD < tierStart + TIERS[i].seats) { tierNow = i; break; } tierStart += TIERS[i].seats; }
 const tier = TIERS[tierNow], soldInTier = SOLD - tierStart;
 document.querySelectorAll('[data-price]').forEach(el => el.textContent = money(tier.price));
-if (tier.checkout) document.querySelectorAll('[data-buy]').forEach(el => el.href = tier.checkout);
+document.querySelectorAll('[data-buy]').forEach(el => el.href = CHECKOUT);
+document.querySelectorAll('[data-code]').forEach(el => { if (tier.code) { el.querySelector('b').textContent = tier.code; el.hidden = false; } });
 document.querySelectorAll('[data-seats-text]').forEach(el => {
   if (tier.seats) el.textContent = `${tier.seats - soldInTier} of ${tier.seats} left at ${money(tier.price)}`; else el.remove();
 });
