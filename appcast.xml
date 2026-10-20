@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>NotchTime</title>
+        <item>
+            <title>1.0.0</title>
+            <pubDate>Tue, 20 Oct 2026 20:45:51 +0700</pubDate>
+            <sparkle:version>70</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tylernam96/notch-screen-time-releases/releases/download/v1.0.0/NotchTime-1.0.0.dmg" length="11084480" type="application/octet-stream" sparkle:edSignature="Z97gKmLv6FS417eIwIp/CESMMiiX5oINFIl1XYwUlfLKKvf4oCQULXW0Wl0FvHZQO6soI9qmadcYueDta9f4CA=="/>
+        </item>
+    </channel>
+</rss>
