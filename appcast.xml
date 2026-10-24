@@ -3,6 +3,19 @@
     <channel>
         <title>NotchTime</title>
         <item>
+            <title>1.0.3</title>
+            <pubDate>Sat, 24 Oct 2026 23:26:52 +0700</pubDate>
+            <sparkle:version>76</sparkle:version>
+            <sparkle:shortVersionString>1.0.3</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/tylernam96/notch-screen-time-releases/releases/download/v1.0.3/NotchTime-1.0.3.dmg" length="11179415" type="application/octet-stream" sparkle:edSignature="l6OikKzPNnXvhOn+JBCsY1uQ2Cd7a5koTkEPlxBLOGYwNIzljnowQerN0qax3zX2CaKo2iGgiyKAqsdYZZUoAA=="/>
+            <sparkle:deltas>
+                <enclosure url="https://github.com/tylernam96/notch-screen-time-releases/releases/download/v1.0.3/NotchTime76-73.delta" sparkle:deltaFrom="73" length="800162" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="979056" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="KswCBYbY3eNmeTQkrYBx0quoFUQow++z5cAKg1LEdcQ/WpC5W+j4mv3zlXoSvCgZKmrOFBE58+IBwMySPOmHAg=="/>
+                <enclosure url="https://github.com/tylernam96/notch-screen-time-releases/releases/download/v1.0.3/NotchTime76-71.delta" sparkle:deltaFrom="71" length="827474" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="979056" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="BuquczxX06NXFsRNV/S7jyHz5Vxz/MDJYD1ncvta/b2iMimppFbSFyjcL24YBSucoNEwVacjZzycbVpKC8mwDQ=="/>
+                <enclosure url="https://github.com/tylernam96/notch-screen-time-releases/releases/download/v1.0.3/NotchTime76-70.delta" sparkle:deltaFrom="70" length="858934" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="979056" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="6E/ydNAktMW+rcrlWAwBOK/HBThifPegymK5zP3gyY24adWJ7szJSsoaAk6GLkc2SfaZGrWaZnaFVaOhkbmBBg=="/>
+            </sparkle:deltas>
+        </item>
+        <item>
             <title>1.0.2</title>
             <pubDate>Thu, 22 Oct 2026 14:17:37 +0700</pubDate>
             <sparkle:version>73</sparkle:version>
@@ -24,14 +37,6 @@
             <sparkle:deltas>
                 <enclosure url="https://github.com/tylernam96/notch-screen-time-releases/releases/download/v1.0.1/NotchTime71-70.delta" sparkle:deltaFrom="70" length="729342" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="979056" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="ATsmWG77W7Qooq3VrnWT7MAHIt0gyHf0/lX7FfTxa+yjVev8nQLu4DTeNO2J2uy76Ej73EdW4Tn2gqGY6i38BA=="/>
             </sparkle:deltas>
-        </item>
-        <item>
-            <title>1.0.0</title>
-            <pubDate>Tue, 20 Oct 2026 20:45:51 +0700</pubDate>
-            <sparkle:version>70</sparkle:version>
-            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/tylernam96/notch-screen-time-releases/releases/download/v1.0.0/NotchTime-1.0.0.dmg" length="11084480" type="application/octet-stream" sparkle:edSignature="Z97gKmLv6FS417eIwIp/CESMMiiX5oINFIl1XYwUlfLKKvf4oCQULXW0Wl0FvHZQO6soI9qmadcYueDta9f4CA=="/>
         </item>
     </channel>
 </rss>
